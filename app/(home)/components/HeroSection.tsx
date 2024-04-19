@@ -22,19 +22,19 @@ export default function HeroSection() {
           href={"mailto:aayushat902@gmail.com"}
           className="inline-block group"
         >
-          <Title text={"Contact Me"} />
+          <Title text={"Contact Me"}  className=" text-center"/>
         </Link>
       </div>
       <div className="relative">
         <div className="w-72 h-72 space-y-3 rotate-[60deg] py-10 relative">
           <div className="flex gap-3 translate-x-8 ">
-            <div className="w-32 h-32 rounded-2xl bg-green-500 hover:rotate-45 transition-all"></div>
-            <div className="w-32 h-32 rounded-3xl bg-indigo-500 rotate-45 hover:rotate-90 transition-all"></div>
+            <div className="w-32 h-32 rounded-2xl bg-yellow-500 hover:rotate-45 transition-all"></div>
+            <div className="w-32 h-32 rounded-3xl bg-purple-500 rotate-45 hover:rotate-90 transition-all"></div>
           </div>
           <div className="flex gap-3 -translate-x-8 ">
-            <div className="w-32 h-32 rounded-3xl bg-indigo-500 rotate-45 hover:rotate-90 transition-all"></div>
+            <div className="w-32 h-32 rounded-3xl bg-purple-500 rotate-45 hover:rotate-90 transition-all"></div>
 
-            <div className="w-32 h-32 rounded-2xl bg-green-500 hover:rotate-45 transition-all"></div>
+            <div className="w-32 h-32 rounded-2xl bg-yellow-500 hover:rotate-45 transition-all"></div>
           </div>
           <div className="glow absolute top-[50%] right-[50%] -z-10"></div>
         </div>

@@ -9,11 +9,11 @@ export default function Title({
 }) {
   return (
     <div className={className}>
-      <h1 className="text-3xl font-bold flex gap-3 group-hover:text-green-400 transition-all">
+      <h1 className="text-3xl font-bold flex gap-3 group-hover:text-purple-400 transition-all">
         {text}
       </h1>
       <div className="w-40 h-2 bg-purple-500 rounded-full translate-x-4"></div>
-      <div className="w-40 h-2 bg-gray-500 rounded-full"></div>
+      <div className="w-40 h-2 bg-yellow-500 rounded-full"></div>
     </div>
   );
 }

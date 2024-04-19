@@ -25,7 +25,9 @@ export default function navbar({className}:{className?:string}) {
 
   return (
     <nav className={cn("py-10 flex justify-between items-center animate-move-down",className)}> 
-      <h1 className="text-2xl font-bold ">Aayush Sharma</h1> 
+      <h1 className="text-2xl font-bold group cursor-pointer">Aayush Sharma
+      <div className="w-100 h-1 bg-yellow-500 rounded-full group-hover:scale-50 transition-all "></div></h1> 
+      
       <i data-lucide="map-pin-off"></i>
       
       <div className="flex items-center gap-5">
@@ -40,7 +42,7 @@ export default function navbar({className}:{className?:string}) {
               aria-label={social.Label}
               target="_blank"
             >
-              <Icon className="w-5 h-5 hover:scale-125 transition-all" />
+              <Icon className="w-5 h-5 hover:scale-150 transition-all" />
 
             </Link>
             

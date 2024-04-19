@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL("https://next-supabase-vote.vercel.app/"),
 
 	title: 'Aayush Sharma',
-	authors: {
+	authors: {   
 		name: "Aayush Sharma",
 	},
 

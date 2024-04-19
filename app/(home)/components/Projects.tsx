@@ -19,7 +19,7 @@ export default function Projects() {
             title:"F1 soft Clone",
             tech:[SiJavascript,SiHtml5,SiCss3],
             link:"https://f1softclone-clone.vercel.app/",
-            cover:"/project3.png",
+            cover:"/project4.png",
             background:"bg-green-500",
         },
         {
@@ -33,14 +33,14 @@ export default function Projects() {
             title:"Appwrite Auth Todo",
             tech:[SiReact,SiAppwrite,SiTailwindcss],
             link:"https://appwrite-auth-six.vercel.app/",
-            cover:"/project1.png",
+            cover:"/project5.png",
             background:"bg-purple-500",
         },
         {
             title:"Portfolio",
             tech:[SiNextdotjs,SiTailwindcss],
             link:"https://aayyus-portfolio.vercel.app/",
-            cover:"/project1.png",
+            cover:"/project6.png",
             background:"bg-yellow-500",
         },
 

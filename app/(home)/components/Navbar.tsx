@@ -12,12 +12,12 @@ export default function navbar({className}:{className?:string}) {
       Icon: SlSocialLinkedin,
     },
     {
-      Link: "https://www.linkedin.com",
+      Link: "https://github.com/aayyus/",
       Label: "Github",
       Icon: SiGithub,
     },
     {
-      Link: "https://www.linkedin.com",
+      Link: "https://www.instagram.com/aayyus._/",
       Label: "insta",
       Icon: CiInstagram,
     },

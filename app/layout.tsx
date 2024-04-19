@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://next-supabase-vote.vercel.app/"),
+	metadataBase: new URL("https://aayyus-portfolio-nxt.vercel.app/"),
 
 	title: 'Aayush Sharma',
 	authors: {   
@@ -18,13 +18,13 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "Aayush Sharma",
 		description:
-			"Cast your vote now and see live updates on the poll results, powered by the real-time capabilities of Supabase database integration in our web app.",
+			"",
 		url: "https://next-supabase-vote.vercel.app/",
 		siteName: "Aayush Sharma",
 		images: "/og.png",
 		type: "website",
 	},
-	keywords: ["daily web coding", "chensokheng", "dailywebcoding"],
+	keywords: [],
 };
 
 export default function RootLayout({

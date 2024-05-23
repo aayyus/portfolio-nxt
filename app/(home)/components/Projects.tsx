@@ -37,9 +37,9 @@ export default function Projects() {
             background:"bg-purple-500",
         },
         {
-            title:"Portfolio",
-            tech:[SiNextdotjs,SiTailwindcss],
-            link:"https://aayyus-portfolio.vercel.app/",
+            title:"Weather App",
+            tech:[SiReact,SiCss3],
+            link:"https://weatherapp-aayyus.vercel.app/",
             cover:"/project6.png",
             background:"bg-yellow-500",
         },

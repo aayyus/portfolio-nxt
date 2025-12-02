@@ -3,47 +3,26 @@
 import React from 'react';
 import Title from './Title';
 import { HoverEffect } from './UI/card-hover-effect';
-import { SiReact,SiNextdotjs,SiHtml5,SiCss3, SiAppwrite, SiJavascript, SiBootstrap, SiTailwindcss, SiGithub, } from 'react-icons/si';
+import { SiReact,SiNextdotjs,SiHtml5,SiCss3, SiAppwrite, SiJavascript, SiBootstrap, SiTailwindcss, SiGithub,SiShopify,SiMeta } from 'react-icons/si';
 
 export default function Skills() {
 
     const skills=[
         {
-            text:"React",
-            Icon: SiReact,
+            text:"Shopify",
+            Icon: SiShopify,
         },
         {
-            text:"Next Js",
-            Icon: SiNextdotjs,
+            text:"Meta",
+            Icon: SiMeta,
         },
-        {
-            text:"HTML",
-            Icon: SiHtml5,
-        },
-        {
-            text:"CSS",
-            Icon: SiCss3,
-        },
-        {
-            text:"Appwrite",
-            Icon: SiAppwrite,
-        },
+        
+      
         {
             text:"JavaScript",
             Icon: SiJavascript,
         },
-        {
-            text:"BootStrap",
-            Icon: SiBootstrap,
-        },
-        {
-            text:"Tailwind",
-            Icon: SiTailwindcss,
-        },
-        {
-            text:"GitHub",
-            Icon: SiGithub,
-        },
+        
     ]
   return (
    <div className='max-w-5xl mx-auto px-8'>

@@ -7,7 +7,7 @@ import { SlSocialLinkedin } from "react-icons/sl";
 export default function navbar({className}:{className?:string}) {
   const socials = [
     {
-      Link: "https://www.linkedin.com",
+      Link: "https://www.linkedin.com/in/aayush-sharma-3a167222b/",
       Label: "Linkedin",
       Icon: SlSocialLinkedin,
     },
@@ -26,7 +26,7 @@ export default function navbar({className}:{className?:string}) {
   return (
     <nav className={cn("py-10 flex justify-between items-center animate-move-down",className)}> 
       <h1 className="text-2xl font-bold group cursor-pointer">Aayush Sharma
-      <div className="w-100 h-1 bg-yellow-500 rounded-full group-hover:scale-50 transition-all "></div></h1> 
+      <div className="w-100 h-1 bg-green-500 rounded-full group-hover:scale-50 transition-all "></div></h1> 
       
       <i data-lucide="map-pin-off"></i>
       

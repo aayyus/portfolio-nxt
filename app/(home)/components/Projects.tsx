@@ -3,46 +3,62 @@ import Title from './Title';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DirectionAwareHover } from './UI/direction-aware-hover';
-import { SiReact,SiNextdotjs,SiHtml5,SiCss3, SiAppwrite, SiJavascript, SiBootstrap, SiTailwindcss, SiGithub, } from 'react-icons/si';
+import { SiReact,SiNextdotjs,SiHtml5,SiCss3, SiAppwrite, SiJavascript, SiBootstrap, SiTailwindcss, SiGithub, SiShopify, } from 'react-icons/si';
 
 export default function Projects() {
 
     const projects =[
         {
-            title:"Merav Services",
-            tech:[SiJavascript,SiHtml5,SiCss3,SiBootstrap],
-            link:"https://www.meravservices.com.np/",
-            cover:"/project2.png",
-            background:"bg-indigo-500",
+            title:"Torbreck Vintners",
+            tech:[SiJavascript,SiShopify],
+            link:"https://torbreck.com/",
+            cover:"/torbreck.png",
+            background:"bg-gray-500",
+        },
+         {
+            title:"Etikette Candles",
+            tech:[SiJavascript,SiShopify],
+            link:"https://etikettecandles.com/",
+            cover:"/etikette.png",
+            background:"bg-gray-500",
         },
         {
-            title:"F1 soft Clone",
-            tech:[SiJavascript,SiHtml5,SiCss3],
-            link:"https://f1softclone-clone.vercel.app/",
-            cover:"/project4.png",
-            background:"bg-green-500",
+            title:"Neon Packaging",
+            tech:[SiJavascript,SiShopify],
+            link:"https://www.neonpackaging.com.au/",
+            cover:"/neon.png",
+            background:"bg-gray-500",
         },
+         {
+            title:"UNTD2",
+            tech:[SiJavascript,SiShopify],
+            link:"https://untd2.com/",
+            cover:"/untd.png",
+            background:"bg-gray-500",
+        },
+        {
+            title:"Island Vibes",
+            tech:[SiJavascript,SiShopify],
+            link:"https://www.island-vibes.com.au/",
+            cover:"/island.png",
+            background:"bg-gray-500",
+        },
+        
         {
             title:"Dmerce",
             tech:[SiNextdotjs,SiCss3],
             link:"https://dmerce.vercel.app/",
             cover:"/project1.png",
-            background:"bg-blue-500",
+            background:"bg-gray-500",
         },
         {
-            title:"Appwrite Auth Todo",
-            tech:[SiReact,SiAppwrite,SiTailwindcss],
-            link:"https://appwrite-auth-six.vercel.app/",
-            cover:"/project5.png",
-            background:"bg-purple-500",
+            title:"Merav Services",
+            tech:[SiJavascript,SiHtml5,SiCss3,SiBootstrap],
+            link:"https://www.meravservices.com.np/",
+            cover:"/project2.png",
+            background:"bg-gray-500",
         },
-        {
-            title:"Weather App",
-            tech:[SiReact,SiCss3],
-            link:"https://weatherapp-aayyus.vercel.app/",
-            cover:"/project6.png",
-            background:"bg-yellow-500",
-        },
+       
 
     ];
   return (

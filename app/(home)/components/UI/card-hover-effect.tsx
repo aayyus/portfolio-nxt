@@ -14,7 +14,7 @@ export const HoverEffect = ({
   }[];
   className?: string;
 }) => {
-  let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  let [hoveyellowIndex, setHoveyellowIndex] = useState<number | null>(null);
 
   return (
     <div
@@ -29,11 +29,11 @@ export const HoverEffect = ({
           <div
             key={idx}
             className="relative group  block p-2 h-full w-full"
-            onMouseEnter={() => setHoveredIndex(idx)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => setHoveyellowIndex(idx)}
+            onMouseLeave={() => setHoveyellowIndex(null)}
           >
             <AnimatePresence>
-              {hoveredIndex === idx && (
+              {hoveyellowIndex === idx && (
                 <motion.span
                   className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-lg"
                   layoutId="hoverBackground"
@@ -49,10 +49,10 @@ export const HoverEffect = ({
                 />
               )}
             </AnimatePresence>
-            <div className="rounded-md w-full p-4 overflow-hidden bg-black group-hover:ring-2 ring-purple-500 relative z-20 transition-all duration-500 cursor-pointer">
+            <div className="rounded-md w-full p-4 overflow-hidden bg-black group-hover:ring-2 ring-yellow-500 relative z-20 transition-all duration-500 cursor-pointer">
               <div className="py-10 z-50 realtive space-y-5">
                 <Icons className="w-8 h-8 mx-auto"/>
-                <p className="text-2xl font-bold text-center text-gray-300">
+                <p className="text-2xl font-bold text-center text-white-300">
                   {item.text}
                 </p>
               </div>

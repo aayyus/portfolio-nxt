@@ -82,7 +82,7 @@
     height: 0px;
     border-radius: 50%;
     box-shadow:
-      0 0 200px 30px #fff,  /* inner white */
-      0 0 200px 60px #f0f, /* middle magenta */
+      0 0 200px 30px #fff,  /* inner yellow */
+      0 0 200px 60px rgb(0, 255, 0), /* middle magenta */
       0 0 240px 90px #0ff; /* outer cyan */
 }

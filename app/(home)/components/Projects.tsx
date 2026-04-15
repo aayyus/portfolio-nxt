@@ -8,6 +8,20 @@ import { SiReact,SiNextdotjs,SiHtml5,SiCss3, SiAppwrite, SiJavascript, SiBootstr
 export default function Projects() {
 
     const projects =[
+         {
+            title:"Lydian AU",
+            tech:[SiJavascript,SiShopify],
+            link:"https://lydian.au/",
+            cover:"/project7.png",
+            background:"bg-gray-500",
+        },
+        {
+            title:"Wellness with Jess",
+            tech:[SiJavascript,SiShopify],
+            link:"https://lesswithjess.com.au/",
+            cover:"/project8.png",
+            background:"bg-gray-500",
+        },
         {
             title:"Torbreck Vintners",
             tech:[SiJavascript,SiShopify],

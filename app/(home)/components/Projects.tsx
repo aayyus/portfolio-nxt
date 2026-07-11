@@ -9,6 +9,12 @@ import { getIcon } from "@/lib/icons";
 import type { Project } from "@/lib/types";
 import { LuArrowUpRight } from "react-icons/lu";
 
+function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+  e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+}
+
 export default function Projects({ projects }: { projects: Project[] }) {
   return (
     <section id="projects" className="py-24">
@@ -26,15 +32,17 @@ export default function Projects({ projects }: { projects: Project[] }) {
             <Link
               href={project.link}
               target="_blank"
-              className="glass gradient-border shine group block overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_16px_70px_rgba(34,197,94,0.35)]"
+              onMouseMove={trackSpotlight}
+              className="glass gradient-border group relative block overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_60px_rgba(34,197,94,0.3)]"
             >
+              <div className="spotlight z-10" />
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={project.cover}
                   alt={project.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-top transition-all duration-700 group-hover:rotate-1 group-hover:scale-110"
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030705] via-transparent to-transparent opacity-60" />
                 <span className="glass absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-green-300">
@@ -54,7 +62,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                     })}
                   </div>
                 </div>
-                <span className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all duration-300 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-green-500 group-hover:to-emerald-600 group-hover:text-black group-hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]">
+                <span className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-green-500 group-hover:to-emerald-600 group-hover:text-black group-hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]">
                   <LuArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:rotate-45" />
                 </span>
               </div>

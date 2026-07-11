@@ -29,7 +29,7 @@ export default function Footer() {
           </p>
           <Link
             href="mailto:aayushat902@gmail.com"
-            className="shine group relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 text-sm font-semibold text-white shadow-[0_0_32px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-[0_0_56px_rgba(34,197,94,0.8)] active:scale-95"
+            className="shine group relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 text-sm font-semibold text-white shadow-[0_0_32px_rgba(34,197,94,0.45)] transition-all duration-300 hover:shadow-[0_0_56px_rgba(34,197,94,0.8)] active:scale-95"
           >
             <LuMail className="h-4 w-4" />
             Get In Touch
@@ -49,7 +49,7 @@ export default function Footer() {
                   href={social.Link}
                   aria-label={social.Label}
                   target="_blank"
-                  className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:rotate-6 hover:text-green-300 hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]"
+                  className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all duration-300 hover:text-green-300 hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]"
                 >
                   <Icon className="h-4 w-4" />
                 </Link>

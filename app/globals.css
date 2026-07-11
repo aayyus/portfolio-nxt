@@ -144,14 +144,63 @@
   transform: translateX(150%) skewX(-10deg);
 }
 
-/* Icon wiggle when the parent .group is hovered */
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(-10deg) scale(1.15); }
-  75% { transform: rotate(10deg) scale(1.15); }
+/* Cursor-tracking spotlight inside cards (position set via --mx/--my) */
+.spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(74, 222, 128, 0.14),
+    transparent 65%
+  );
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
-.group:hover .icon-wiggle {
-  animation: wiggle 0.5s ease-in-out;
+.group:hover .spotlight {
+  opacity: 1;
+}
+
+/* Headings glow softly under the cursor */
+.text-gradient {
+  transition: filter 0.3s ease;
+}
+.text-gradient:hover {
+  filter: drop-shadow(0 0 22px rgba(74, 222, 128, 0.5));
+}
+
+/* Custom cursor (mounted on the home page; hidden on touch devices) */
+body.custom-cursor,
+body.custom-cursor * {
+  cursor: none !important;
+}
+.cursor-dot,
+.cursor-ring,
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  z-index: 9999;
+}
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: #4ade80;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
+}
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(74, 222, 128, 0.65);
+}
+.cursor-glow {
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.08), transparent 65%);
+  z-index: 30;
 }
 
 /* Ambient scene glows */

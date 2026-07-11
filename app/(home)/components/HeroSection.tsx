@@ -60,14 +60,14 @@ export default function HeroSection() {
         >
           <Link
             href="mailto:aayushat902@gmail.com"
-            className="shine group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_32px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-[0_0_56px_rgba(34,197,94,0.8)] active:scale-95"
+            className="shine group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_32px_rgba(34,197,94,0.45)] transition-all duration-300 hover:shadow-[0_0_56px_rgba(34,197,94,0.8)] active:scale-95"
           >
             <LuMail className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
             Contact Me
           </Link>
           <Link
             href="#projects"
-            className="glass shine group inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-white/80 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-white/10 hover:text-green-300 active:scale-95"
+            className="glass shine group inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-white/80 transition-all duration-300 hover:bg-white/10 hover:text-green-300 active:scale-95"
           >
             View Projects
             <LuArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />

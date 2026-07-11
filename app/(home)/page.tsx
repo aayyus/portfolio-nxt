@@ -4,6 +4,7 @@ import HeroSection from "./components/HeroSection";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Footer from "./components/Footer";
+import CursorGlow from "./components/CursorGlow";
 import { readJson } from "@/lib/storage";
 import type { Project, Skill } from "@/lib/types";
 
@@ -18,6 +19,8 @@ export default async function page() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#030705] text-white">
+      <CursorGlow />
+
       {/* Ambient backdrop: glow orbs */}
       <div className="orb orb-green -top-40 -left-40 h-[34rem] w-[34rem]" />
       <div className="orb orb-emerald top-1/4 -right-52 h-[38rem] w-[38rem]" />

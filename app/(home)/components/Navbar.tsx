@@ -53,7 +53,7 @@ export default function Navbar({ className }: { className?: string }) {
                 href={social.Link}
                 aria-label={social.Label}
                 target="_blank"
-                className="grid h-9 w-9 place-items-center rounded-xl text-white/60 transition-all duration-300 hover:-translate-y-0.5 hover:scale-125 hover:-rotate-6 hover:bg-white/10 hover:text-green-300 hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]"
+                className="grid h-9 w-9 place-items-center rounded-xl text-white/60 transition-all duration-300 hover:bg-white/10 hover:text-green-300 hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]"
               >
                 <Icon className="h-4 w-4" />
               </Link>

@@ -6,6 +6,12 @@ import Title from "./Title";
 import { getIcon } from "@/lib/icons";
 import type { Skill } from "@/lib/types";
 
+function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+  e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+}
+
 export default function Skills({ skills }: { skills: Skill[] }) {
   return (
     <section id="skills" className="py-24">
@@ -21,10 +27,12 @@ export default function Skills({ skills }: { skills: Skill[] }) {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: (idx % 3) * 0.1, ease: "easeOut" }}
-              className="glass gradient-border shine group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(34,197,94,0.35)]"
+              onMouseMove={trackSpotlight}
+              className="glass gradient-border group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(34,197,94,0.3)]"
             >
+              <div className="spotlight" />
               <div className="flex items-start gap-4">
-                <div className="glass icon-wiggle grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-colors duration-300 group-hover:bg-green-500/10">
+                <div className="glass grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-colors duration-300 group-hover:bg-green-500/10">
                   <Icon className="h-6 w-6 text-green-400 transition-colors duration-300 group-hover:text-green-300" />
                 </div>
                 <div>

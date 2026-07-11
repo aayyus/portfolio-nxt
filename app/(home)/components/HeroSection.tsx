@@ -119,16 +119,16 @@ export default function HeroSection() {
           </div>
 
           {/* Floating tech chips */}
-          <div className="glass absolute -left-4 top-10 flex animate-float cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:-left-10">
+          <div className="glass absolute -left-4 top-10 flex cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:-left-10">
             <SiShopify className="h-4 w-4 text-green-400" /> Shopify
           </div>
-          <div className="glass absolute -right-2 top-1/3 flex animate-float-delayed cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:-right-8">
+          <div className="glass absolute -right-2 top-1/3 flex cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:-right-8">
             <SiMeta className="h-4 w-4 text-green-400" /> Meta Ads
           </div>
-          <div className="glass absolute bottom-8 left-6 flex animate-float cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:left-0">
+          <div className="glass absolute bottom-8 left-6 flex cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] sm:left-0">
             <SiJavascript className="h-4 w-4 text-green-300" /> JavaScript
           </div>
-          <div className="glass absolute -bottom-2 right-10 flex animate-float-delayed cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]">
+          <div className="glass absolute -bottom-2 right-10 flex cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]">
             <LuMail className="h-4 w-4 text-emerald-300" /> Klaviyo
           </div>
         </div>

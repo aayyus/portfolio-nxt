@@ -203,6 +203,33 @@ body.custom-cursor * {
   z-index: 30;
 }
 
+/* Orbit rotor: spins while its .group parent is hovered, freezes in place
+   (no snap-back) the instant the cursor leaves, since a paused CSS
+   animation simply holds its current frame. Each chip inside carries a
+   .orbit-counter running the exact opposite spin on the same duration, so
+   as the whole group swings around the ring, the chip labels stay level
+   instead of tumbling like a blade. */
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes orbit-spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+.orbit-rotor {
+  animation: orbit-spin 9s linear infinite;
+  animation-play-state: paused;
+}
+.orbit-counter {
+  animation: orbit-spin-reverse 9s linear infinite;
+  animation-play-state: paused;
+}
+.group:hover .orbit-rotor,
+.group:hover .orbit-counter {
+  animation-play-state: running;
+}
+
 /* Ambient scene glows */
 .orb {
   position: absolute;

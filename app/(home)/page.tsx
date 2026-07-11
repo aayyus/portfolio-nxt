@@ -4,22 +4,31 @@ import HeroSection from "./components/HeroSection";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Footer from "./components/Footer";
+import { readJson } from "@/lib/storage";
+import type { Project, Skill } from "@/lib/types";
 
-export default function page() {
+// Re-read data on each request so admin edits show up without a manual rebuild
+export const dynamic = "force-dynamic";
+
+export default async function page() {
+  const [projects, skills] = await Promise.all([
+    readJson<Project[]>("projects"),
+    readJson<Skill[]>("skills"),
+  ]);
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05060c] text-white">
-      {/* Ambient backdrop: masked grid + glow orbs */}
-      <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.04] mask-radial-faded" />
-      <div className="orb orb-cyan -top-40 -left-40 h-[34rem] w-[34rem]" />
-      <div className="orb orb-violet top-1/4 -right-52 h-[38rem] w-[38rem]" />
-      <div className="orb orb-fuchsia bottom-0 left-1/3 h-[30rem] w-[30rem]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#030705] text-white">
+      {/* Ambient backdrop: glow orbs */}
+      <div className="orb orb-green -top-40 -left-40 h-[34rem] w-[34rem]" />
+      <div className="orb orb-emerald top-1/4 -right-52 h-[38rem] w-[38rem]" />
+      <div className="orb orb-lime bottom-0 left-1/3 h-[30rem] w-[30rem]" />
 
       <div className="relative z-10">
         <Navbar />
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <HeroSection />
-          <Skills />
-          <Projects />
+          <Skills skills={skills} />
+          <Projects projects={projects} />
         </div>
         <Footer />
       </div>

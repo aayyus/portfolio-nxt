@@ -22,14 +22,14 @@ export default function Title({
       className={cn("flex flex-col items-center gap-3 text-center", className)}
     >
       {eyebrow && (
-        <span className="glass rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300">
+        <span className="glass rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.35em] text-green-300">
           {eyebrow}
         </span>
       )}
       <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
         <span className="text-gradient">{text}</span>
       </h2>
-      <div className="h-px w-24 bg-gradient-to-r from-transparent via-violet-400 to-transparent" />
+      <div className="h-px w-24 bg-gradient-to-r from-transparent via-green-400 to-transparent" />
     </motion.div>
   );
 }

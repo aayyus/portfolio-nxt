@@ -74,7 +74,7 @@
     @apply bg-background text-foreground antialiased;
   }
   ::selection {
-    background: rgba(139, 92, 246, 0.4);
+    background: rgba(34, 197, 94, 0.4);
     color: #fff;
   }
 }
@@ -82,7 +82,7 @@
 @layer utilities {
   /* Gradient headline text */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-violet-400 to-fuchsia-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-200 via-green-400 to-emerald-500;
   }
 
   /* Frosted glass panel */
@@ -102,10 +102,10 @@
     padding: 1px;
     background: linear-gradient(
       135deg,
-      rgba(34, 211, 238, 0.5),
-      rgba(139, 92, 246, 0.25) 40%,
-      rgba(217, 70, 239, 0.08) 70%,
-      rgba(34, 211, 238, 0.3)
+      rgba(74, 222, 128, 0.5),
+      rgba(16, 185, 129, 0.25) 40%,
+      rgba(34, 197, 94, 0.08) 70%,
+      rgba(74, 222, 128, 0.3)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -120,6 +120,40 @@
   }
 }
 
+/* Light streak that sweeps across an element on hover */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(163, 255, 195, 0.18) 50%,
+    transparent 60%
+  );
+  transform: translateX(-150%) skewX(-10deg);
+  transition: transform 0.65s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.shine:hover::after {
+  transform: translateX(150%) skewX(-10deg);
+}
+
+/* Icon wiggle when the parent .group is hovered */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-10deg) scale(1.15); }
+  75% { transform: rotate(10deg) scale(1.15); }
+}
+.group:hover .icon-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
 /* Ambient scene glows */
 .orb {
   position: absolute;
@@ -127,14 +161,14 @@
   filter: blur(90px);
   pointer-events: none;
 }
-.orb-cyan {
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 65%);
+.orb-green {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.3), transparent 65%);
 }
-.orb-violet {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 65%);
+.orb-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.28), transparent 65%);
 }
-.orb-fuchsia {
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.25), transparent 65%);
+.orb-lime {
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.2), transparent 65%);
 }
 
 /* Slim custom scrollbar to match the dark scene */
@@ -145,9 +179,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.35);
+  background: rgba(34, 197, 94, 0.35);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.6);
+  background: rgba(34, 197, 94, 0.6);
 }

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "shopify",
+    "text": "Shopify",
+    "description": "Theme development, Liquid, custom apps & storefront features",
+    "icon": "SiShopify"
+  },
+  {
+    "id": "klaviyo",
+    "text": "Klaviyo",
+    "description": "Email flows, segmentation & lifecycle marketing automation",
+    "icon": "LuMail"
+  },
+  {
+    "id": "meta-ads",
+    "text": "Meta Ads",
+    "description": "Pixel setup, conversion APIs & advertising integrations",
+    "icon": "SiMeta"
+  },
+  {
+    "id": "javascript",
+    "text": "JavaScript",
+    "description": "Modern ES6+, DOM APIs & interactive storefront logic",
+    "icon": "SiJavascript"
+  },
+  {
+    "id": "typescript",
+    "text": "TypeScript",
+    "description": "Type-safe applications that scale with confidence",
+    "icon": "SiTypescript"
+  },
+  {
+    "id": "react",
+    "text": "React",
+    "description": "Component-driven UIs with hooks & modern patterns",
+    "icon": "SiReact"
+  },
+  {
+    "id": "nextjs",
+    "text": "Next.js",
+    "description": "Full-stack React with SSR, ISR & the App Router",
+    "icon": "SiNextdotjs"
+  },
+  {
+    "id": "tailwind",
+    "text": "Tailwind CSS",
+    "description": "Utility-first styling for rapid, consistent design",
+    "icon": "SiTailwindcss"
+  },
+  {
+    "id": "analytics",
+    "text": "Analytics",
+    "description": "GA4, tracking & data-driven conversion optimization",
+    "icon": "SiGoogleanalytics"
+  }
+]

@@ -1,0 +1,103 @@
+[
+  {
+    "id": "lydian-au",
+    "title": "Lydian AU",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://lydian.au/",
+    "cover": "/project7.png"
+  },
+  {
+    "id": "wellness-with-jess",
+    "title": "Wellness with Jess",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://lesswithjess.com.au/",
+    "cover": "/project8.png"
+  },
+  {
+    "id": "torbreck-vintners",
+    "title": "Torbreck Vintners",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://torbreck.com/",
+    "cover": "/torbreck.png"
+  },
+  {
+    "id": "etikette-candles",
+    "title": "Etikette Candles",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://etikettecandles.com/",
+    "cover": "/etikette.png"
+  },
+  {
+    "id": "neon-packaging",
+    "title": "Neon Packaging",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://www.neonpackaging.com.au/",
+    "cover": "/neon.png"
+  },
+  {
+    "id": "untd2",
+    "title": "UNTD2",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://untd2.com/",
+    "cover": "/untd.png"
+  },
+  {
+    "id": "island-vibes",
+    "title": "Island Vibes",
+    "tag": "Shopify",
+    "tech": [
+      "SiJavascript",
+      "SiShopify"
+    ],
+    "link": "https://www.island-vibes.com.au/",
+    "cover": "/island.png"
+  },
+  {
+    "id": "dmerce",
+    "title": "Dmerce",
+    "tag": "Web App",
+    "tech": [
+      "SiNextdotjs",
+      "SiCss3"
+    ],
+    "link": "https://dmerce.vercel.app/",
+    "cover": "/project1.png"
+  },
+  {
+    "id": "merav-services",
+    "title": "Merav Services",
+    "tag": "Website",
+    "tech": [
+      "SiJavascript",
+      "SiHtml5",
+      "SiCss3",
+      "SiBootstrap"
+    ],
+    "link": "https://www.meravservices.com.np/",
+    "cover": "/project2.png"
+  }
+]

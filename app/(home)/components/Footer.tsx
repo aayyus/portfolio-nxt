@@ -17,7 +17,7 @@ export default function Footer() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="glass gradient-border relative overflow-hidden rounded-3xl p-10 text-center sm:p-16"
         >
-          <div className="orb orb-violet -top-24 left-1/2 h-64 w-64 -translate-x-1/2" />
+          <div className="orb orb-emerald -top-24 left-1/2 h-64 w-64 -translate-x-1/2" />
           <h2 className="relative text-3xl font-bold tracking-tight sm:text-5xl">
             Let&apos;s build something
             <br />
@@ -29,7 +29,7 @@ export default function Footer() {
           </p>
           <Link
             href="mailto:aayushat902@gmail.com"
-            className="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 px-8 py-4 text-sm font-semibold text-white shadow-[0_0_32px_rgba(139,92,246,0.45)] transition-all hover:shadow-[0_0_48px_rgba(139,92,246,0.7)]"
+            className="shine group relative mt-8 inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 text-sm font-semibold text-white shadow-[0_0_32px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-[0_0_56px_rgba(34,197,94,0.8)] active:scale-95"
           >
             <LuMail className="h-4 w-4" />
             Get In Touch
@@ -49,7 +49,7 @@ export default function Footer() {
                   href={social.Link}
                   aria-label={social.Label}
                   target="_blank"
-                  className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all hover:text-cyan-300"
+                  className="glass grid h-10 w-10 place-items-center rounded-xl text-white/50 transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:rotate-6 hover:text-green-300 hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]"
                 >
                   <Icon className="h-4 w-4" />
                 </Link>

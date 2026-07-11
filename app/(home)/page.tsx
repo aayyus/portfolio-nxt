@@ -7,20 +7,22 @@ import Footer from "./components/Footer";
 
 export default function page() {
   return (
-    <div className="min-h-screen bg-black overflow-hidden">
-      <div className=" dark:bg-black bg-yellow  dark:bg-dot-yellow/[0.15] bg-dot-black/[0.15] ">
-        <div className="max-w-7xl mx-auto p-5 mb-10">
-          <Navbar />
+    <main className="relative min-h-screen overflow-hidden bg-[#05060c] text-white">
+      {/* Ambient backdrop: masked grid + glow orbs */}
+      <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.04] mask-radial-faded" />
+      <div className="orb orb-cyan -top-40 -left-40 h-[34rem] w-[34rem]" />
+      <div className="orb orb-violet top-1/4 -right-52 h-[38rem] w-[38rem]" />
+      <div className="orb orb-fuchsia bottom-0 left-1/3 h-[30rem] w-[30rem]" />
+
+      <div className="relative z-10">
+        <Navbar />
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <HeroSection />
-        </div>
-        <div className="h-10 xl:h-32 bg-gradient-to-t from-black absolute -bottom-5 left-0 xl:bottom-0 w-full "></div>{" "}
-        <div className="max-w-7xl mx-auto p-5 mt-30">
           <Skills />
-          <Projects/>
-          <Footer/>
-          
+          <Projects />
         </div>
+        <Footer />
       </div>
-    </div>
+    </main>
   );
 }

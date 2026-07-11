@@ -1,19 +1,35 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function Title({
   text,
+  eyebrow,
   className,
 }: {
   text: string;
+  eyebrow?: string;
   className?: string;
 }) {
   return (
-    <div className={className}>
-      <h1 className="text-3xl font-bold flex gap-3 group-hover:text-white-400 transition-all">
-        {text}
-      </h1>
-      <div className="w-40 h-2 bg-yellow-500 rounded-full translate-x-4"></div>
-      <div className="w-40 h-2 bg-green-500 rounded-full"></div>
-    </div>
+    <motion.div
+      initial={{ y: 24, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className={cn("flex flex-col items-center gap-3 text-center", className)}
+    >
+      {eyebrow && (
+        <span className="glass rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300">
+          {eyebrow}
+        </span>
+      )}
+      <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <span className="text-gradient">{text}</span>
+      </h2>
+      <div className="h-px w-24 bg-gradient-to-r from-transparent via-violet-400 to-transparent" />
+    </motion.div>
   );
 }

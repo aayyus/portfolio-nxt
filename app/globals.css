@@ -32,17 +32,17 @@
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 228 40% 3%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 3.9%;
+    --card: 228 35% 5%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 3.9%;
+    --popover: 228 35% 5%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 0 0% 98%;
@@ -71,18 +71,83 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+  ::selection {
+    background: rgba(139, 92, 246, 0.4);
+    color: #fff;
   }
 }
 
+@layer utilities {
+  /* Gradient headline text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-violet-400 to-fuchsia-400;
+  }
 
-.glow{
+  /* Frosted glass panel */
+  .glass {
+    @apply bg-white/[0.04] border border-white/10 backdrop-blur-xl;
+  }
 
-    width: 0px;
-    height: 0px;
-    border-radius: 50%;
-    box-shadow:
-      0 0 200px 30px #fff,  /* inner yellow */
-      0 0 200px 60px rgb(0, 255, 0), /* middle magenta */
-      0 0 240px 90px #0ff; /* outer cyan */
+  /* Gradient border card: paint border with a conic gradient via mask */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.5),
+      rgba(139, 92, 246, 0.25) 40%,
+      rgba(217, 70, 239, 0.08) 70%,
+      rgba(34, 211, 238, 0.3)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Fades the dotted/grid background toward the edges */
+  .mask-radial-faded {
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, black 40%, transparent 100%);
+  }
+}
+
+/* Ambient scene glows */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.orb-cyan {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 65%);
+}
+.orb-violet {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 65%);
+}
+.orb-fuchsia {
+  background: radial-gradient(circle, rgba(217, 70, 239, 0.25), transparent 65%);
+}
+
+/* Slim custom scrollbar to match the dark scene */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
 }

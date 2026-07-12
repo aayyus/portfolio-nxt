@@ -218,10 +218,10 @@ body.custom-cursor * {
   to { transform: rotate(-360deg); }
 }
 .orbit-rotor {
-  animation: orbit-spin 9s linear infinite;
+  animation: orbit-spin 24s linear infinite;
 }
 .orbit-counter {
-  animation: orbit-spin-reverse 9s linear infinite;
+  animation: orbit-spin-reverse 24s linear infinite;
 }
 .group:hover .orbit-rotor,
 .group:hover .orbit-counter {

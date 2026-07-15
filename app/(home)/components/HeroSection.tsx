@@ -10,6 +10,17 @@ import type { Skill } from "@/lib/types";
 const chipCls =
   "orbit-counter glass flex cursor-default items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-[11px] font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]";
 
+/** Deterministic seed from a skill's id, so scatter is stable across
+ * server/client renders instead of using Math.random(). */
+function seedFrom(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h << 5) - h + id.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.12 } },
@@ -104,21 +115,27 @@ export default function HeroSection({ skills }: { skills: Skill[] }) {
             </p>
           </div>
 
-          {/* Every skill orbits the ring, evenly spaced. Each chip's
-              placement rotate is canceled right after positioning it
-              (rotate → out → rotate back), so it sits upright at rest;
-              .orbit-counter then cancels only the live spin, keeping
-              labels level while they swing around on hover. */}
+          {/* Every skill orbits the ring, scattered at a natural-looking
+              spot rather than a perfectly even clock face — each chip
+              gets a stable random-ish angle/radius offset seeded from its
+              id. Each chip's placement rotate is canceled right after
+              positioning it (rotate → out → rotate back), so it sits
+              upright at rest; .orbit-counter then cancels only the live
+              spin, keeping labels level while they swing around on
+              hover. */}
           <div className="orbit-rotor absolute inset-0">
             {skills.map((skill, i) => {
               const Icon = getIcon(skill.icon);
-              const angle = (360 / skills.length) * i;
+              const seed = seedFrom(skill.id);
+              const baseAngle = (360 / skills.length) * i;
+              const angle = baseAngle + ((seed % 29) - 14); // ±14° scatter
+              const radiusJitter = ((seed >> 4) % 71) - 35; // ±35px scatter
               return (
                 <div
                   key={skill.id}
                   className="absolute left-1/2 top-1/2 [--orbit-r:150px] sm:[--orbit-r:195px]"
                   style={{
-                    transform: `translate(-50%, -50%) rotate(${angle}deg) translate(var(--orbit-r)) rotate(${-angle}deg)`,
+                    transform: `translate(-50%, -50%) rotate(${angle}deg) translate(calc(var(--orbit-r) + ${radiusJitter}px)) rotate(${-angle}deg)`,
                   }}
                 >
                   <div className={chipCls}>

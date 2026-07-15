@@ -3,11 +3,12 @@
 import Link from "next/link";
 import React from "react";
 import { motion } from "framer-motion";
-import { SiShopify, SiMeta, SiJavascript } from "react-icons/si";
 import { LuMail, LuArrowDown } from "react-icons/lu";
+import { getIcon } from "@/lib/icons";
+import type { Skill } from "@/lib/types";
 
 const chipCls =
-  "orbit-counter glass flex cursor-default items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]";
+  "orbit-counter glass flex cursor-default items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-[11px] font-semibold text-white/80 transition-colors duration-300 hover:border-green-400/50 hover:text-green-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]";
 
 const container = {
   hidden: {},
@@ -19,7 +20,7 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-export default function HeroSection() {
+export default function HeroSection({ skills }: { skills: Skill[] }) {
   return (
     <section className="flex min-h-screen flex-col-reverse items-center justify-center gap-16 pb-16 pt-32 lg:flex-row lg:justify-between lg:gap-0">
       <motion.div
@@ -103,29 +104,29 @@ export default function HeroSection() {
             </p>
           </div>
 
-          {/* Orbiting tech chips — same spots as before, but now they swing
-              around the ring on hover while their labels stay level */}
+          {/* Every skill orbits the ring, evenly spaced. Each chip's
+              placement rotate is canceled right after positioning it
+              (rotate → out → rotate back), so it sits upright at rest;
+              .orbit-counter then cancels only the live spin, keeping
+              labels level while they swing around on hover. */}
           <div className="orbit-rotor absolute inset-0">
-            <div className="absolute -left-4 top-10 sm:-left-10">
-              <div className={chipCls}>
-                <SiShopify className="h-4 w-4 text-green-400" /> Shopify
-              </div>
-            </div>
-            <div className="absolute -right-2 top-1/3 sm:-right-8">
-              <div className={chipCls}>
-                <SiMeta className="h-4 w-4 text-green-400" /> Meta Ads
-              </div>
-            </div>
-            <div className="absolute bottom-8 left-6 sm:left-0">
-              <div className={chipCls}>
-                <SiJavascript className="h-4 w-4 text-green-300" /> JavaScript
-              </div>
-            </div>
-            <div className="absolute -bottom-2 right-10">
-              <div className={chipCls}>
-                <LuMail className="h-4 w-4 text-emerald-300" /> Klaviyo
-              </div>
-            </div>
+            {skills.map((skill, i) => {
+              const Icon = getIcon(skill.icon);
+              const angle = (360 / skills.length) * i;
+              return (
+                <div
+                  key={skill.id}
+                  className="absolute left-1/2 top-1/2 [--orbit-r:150px] sm:[--orbit-r:195px]"
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${angle}deg) translate(var(--orbit-r)) rotate(${-angle}deg)`,
+                  }}
+                >
+                  <div className={chipCls}>
+                    <Icon className="h-3.5 w-3.5 text-green-400" /> {skill.text}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </motion.div>

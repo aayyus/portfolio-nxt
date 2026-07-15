@@ -29,7 +29,7 @@ export default async function page() {
       <div className="relative z-10">
         <Navbar />
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <HeroSection />
+          <HeroSection skills={skills} />
           <Skills skills={skills} />
           <Projects projects={projects} />
         </div>

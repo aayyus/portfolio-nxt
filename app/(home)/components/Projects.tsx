@@ -15,6 +15,17 @@ function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
   e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
 }
 
+// Written out in full (not built as `object-${align}`) so Tailwind's
+// content scanner can actually find these classes and keep them in the
+// production build.
+const OBJECT_POSITION: Record<string, string> = {
+  top: "object-top",
+  center: "object-center",
+  bottom: "object-bottom",
+  left: "object-left",
+  right: "object-right",
+};
+
 export default function Projects({ projects }: { projects: Project[] }) {
   return (
     <section id="projects" className="py-24">
@@ -42,7 +53,9 @@ export default function Projects({ projects }: { projects: Project[] }) {
                   alt={project.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  className={`object-cover ${
+                    OBJECT_POSITION[project.align ?? "top"] ?? "object-top"
+                  } transition-transform duration-700 group-hover:scale-105`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030705] via-transparent to-transparent opacity-60" />
                 <span className="glass absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-green-300">

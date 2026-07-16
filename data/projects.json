@@ -8,7 +8,8 @@
       "SiShopify"
     ],
     "link": "https://lydian.au/",
-    "cover": "/project7.png"
+    "cover": "/project7.png",
+    "align": "top"
   },
   {
     "id": "wellness-with-jess",

@@ -14,6 +14,8 @@ const IMAGE_EXT: Record<string, string> = {
   "image/gif": "gif",
 };
 
+const ALIGNS = new Set(["top", "center", "bottom", "left", "right"]);
+
 function slugify(title: string): string {
   return title
     .toLowerCase()
@@ -21,25 +23,28 @@ function slugify(title: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export async function GET() {
-  const projects = await readJson<Project[]>("projects");
-  return NextResponse.json(projects);
-}
-
-export async function POST(request: Request) {
-  if (!isAdmin()) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const form = await request.formData().catch(() => null);
-  if (!form) {
-    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
-  }
-
+/** Parses and validates the shared fields for both add and edit, and
+ * uploads a new cover image when one was attached. Returns either the
+ * parsed fields or a NextResponse to return immediately on error. */
+async function parseProjectForm(
+  form: FormData
+): Promise<
+  | {
+      title: string;
+      tag: string;
+      link: string;
+      cover: string;
+      tech: string[];
+      align: Project["align"];
+    }
+  | NextResponse
+> {
   const title = String(form.get("title") ?? "").trim();
   const tag = String(form.get("tag") ?? "").trim();
   const link = String(form.get("link") ?? "").trim();
   let cover = String(form.get("cover") ?? "").trim();
+  const alignRaw = String(form.get("align") ?? "top").trim();
+  const align = (ALIGNS.has(alignRaw) ? alignRaw : "top") as Project["align"];
   let tech: string[] = [];
   try {
     const parsed = JSON.parse(String(form.get("tech") ?? "[]"));
@@ -88,16 +93,60 @@ export async function POST(request: Request) {
     );
   }
 
+  return { title, tag, link, cover, tech, align };
+}
+
+export async function GET() {
   const projects = await readJson<Project[]>("projects");
-  const project: Project = {
-    id: crypto.randomUUID(),
-    title,
-    tag,
-    link,
-    cover,
-    tech,
-  };
+  return NextResponse.json(projects);
+}
+
+export async function POST(request: Request) {
+  if (!isAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const form = await request.formData().catch(() => null);
+  if (!form) {
+    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+  }
+
+  const parsed = await parseProjectForm(form);
+  if (parsed instanceof NextResponse) return parsed;
+
+  const projects = await readJson<Project[]>("projects");
+  const project: Project = { id: crypto.randomUUID(), ...parsed };
   const updated = [project, ...projects];
+  await writeJson("projects", updated);
+  return NextResponse.json(updated);
+}
+
+export async function PATCH(request: Request) {
+  if (!isAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const form = await request.formData().catch(() => null);
+  if (!form) {
+    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+  }
+
+  const id = String(form.get("id") ?? "").trim();
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
+
+  const parsed = await parseProjectForm(form);
+  if (parsed instanceof NextResponse) return parsed;
+
+  const projects = await readJson<Project[]>("projects");
+  const index = projects.findIndex((p) => p.id === id);
+  if (index === -1) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  const updated = [...projects];
+  updated[index] = { ...projects[index], ...parsed, id };
   await writeJson("projects", updated);
   return NextResponse.json(updated);
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { Project, Skill } from "@/lib/types";
+import Image from "next/image";
+import type { ImageAlign, Project, Skill } from "@/lib/types";
 import { getIcon, ICON_LABELS } from "@/lib/icons";
 import {
   LuTrash2,
@@ -15,12 +16,38 @@ import {
   LuWrench,
   LuImagePlus,
   LuX,
+  LuPencil,
+  LuCheck,
 } from "react-icons/lu";
 
 const inputCls =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none transition-colors focus:border-green-400/60";
 
-const emptyProject = { title: "", tag: "Shopify", link: "", cover: "", tech: [] as string[] };
+const ALIGN_OPTIONS: { value: ImageAlign; label: string }[] = [
+  { value: "top", label: "Top" },
+  { value: "center", label: "Center" },
+  { value: "bottom", label: "Bottom" },
+  { value: "left", label: "Left" },
+  { value: "right", label: "Right" },
+];
+
+// Written out in full so Tailwind's content scanner keeps these classes.
+const OBJECT_POSITION: Record<ImageAlign, string> = {
+  top: "object-top",
+  center: "object-center",
+  bottom: "object-bottom",
+  left: "object-left",
+  right: "object-right",
+};
+
+const emptyProject = {
+  title: "",
+  tag: "Shopify",
+  link: "",
+  cover: "",
+  tech: [] as string[],
+  align: "top" as ImageAlign,
+};
 const emptySkill = { text: "", description: "", icon: "SiShopify" };
 
 export default function AdminDashboard({
@@ -34,10 +61,24 @@ export default function AdminDashboard({
   const [projects, setProjects] = useState(initialProjects);
   const [skills, setSkills] = useState(initialSkills);
   const [projectForm, setProjectForm] = useState(emptyProject);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [skillForm, setSkillForm] = useState(emptySkill);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  // Create one object URL per selected file and revoke it when replaced
+  // or unmounted, instead of minting a fresh one on every render.
+  useEffect(() => {
+    if (!imageFile) {
+      setImagePreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(imageFile);
+    setImagePreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageFile]);
 
   async function call(
     url: string,
@@ -67,9 +108,11 @@ export default function AdminDashboard({
     }
   }
 
-  async function addProject(e: React.FormEvent) {
+  async function submitProject(e: React.FormEvent) {
     e.preventDefault();
-    setBusy("add-project");
+    const isEdit = !!editingProjectId;
+    const busyKey = isEdit ? "edit-project" : "add-project";
+    setBusy(busyKey);
     setError("");
     try {
       // Multipart so an image file can ride along; the server names it
@@ -80,17 +123,21 @@ export default function AdminDashboard({
       fd.append("link", projectForm.link);
       fd.append("cover", projectForm.cover);
       fd.append("tech", JSON.stringify(projectForm.tech));
+      fd.append("align", projectForm.align);
       if (imageFile) fd.append("image", imageFile);
+      if (isEdit) fd.append("id", editingProjectId!);
 
-      const res = await fetch("/api/projects", { method: "POST", body: fd });
+      const res = await fetch("/api/projects", {
+        method: isEdit ? "PATCH" : "POST",
+        body: fd,
+      });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Request failed");
         return;
       }
       setProjects(data);
-      setProjectForm(emptyProject);
-      setImageFile(null);
+      cancelEditProject();
     } catch {
       setError("Network error — try again.");
     } finally {
@@ -98,9 +145,33 @@ export default function AdminDashboard({
     }
   }
 
+  function startEditProject(p: Project) {
+    setEditingProjectId(p.id);
+    setProjectForm({
+      title: p.title,
+      tag: p.tag,
+      link: p.link,
+      cover: p.cover,
+      tech: p.tech,
+      align: p.align ?? "top",
+    });
+    setImageFile(null);
+    setError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEditProject() {
+    setEditingProjectId(null);
+    setProjectForm(emptyProject);
+    setImageFile(null);
+  }
+
   async function deleteProject(id: string) {
     const updated = await call("/api/projects", "DELETE", { id }, `del-${id}`);
-    if (updated) setProjects(updated);
+    if (updated) {
+      setProjects(updated);
+      if (editingProjectId === id) cancelEditProject();
+    }
   }
 
   async function addSkill(e: React.FormEvent) {
@@ -177,9 +248,22 @@ export default function AdminDashboard({
           </h2>
 
           <form
-            onSubmit={addProject}
+            onSubmit={submitProject}
             className="glass gradient-border mt-4 space-y-4 rounded-2xl p-5"
           >
+            {editingProjectId && (
+              <div className="flex items-center justify-between rounded-lg bg-green-500/10 px-3 py-2 text-xs font-semibold text-green-300">
+                Editing “{projects.find((p) => p.id === editingProjectId)?.title}”
+                <button
+                  type="button"
+                  onClick={cancelEditProject}
+                  className="flex items-center gap-1 text-white/50 transition-colors hover:text-white"
+                >
+                  <LuX className="h-3.5 w-3.5" /> Cancel
+                </button>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <input
                 className={inputCls}
@@ -236,9 +320,43 @@ export default function AdminDashboard({
                 </span>
               )}
               <span className="text-[11px] text-white/30">
-                Saved as the project title, e.g. “My Store” → my-store.png (max 4 MB)
+                {editingProjectId
+                  ? "Leave blank to keep the current image (max 4 MB)"
+                  : "Saved as the project title, e.g. “My Store” → my-store.png (max 4 MB)"}
               </span>
             </div>
+
+            {/* Cover alignment + live preview */}
+            {(imageFile || projectForm.cover) && (
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5">
+                  <Image
+                    src={imagePreviewUrl ?? projectForm.cover}
+                    alt="Cover preview"
+                    fill
+                    unoptimized
+                    className={`object-cover ${OBJECT_POSITION[projectForm.align]}`}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {ALIGN_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setProjectForm({ ...projectForm, align: opt.value })}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                        projectForm.align === opt.value
+                          ? "bg-gradient-to-r from-green-500 to-emerald-600 text-black"
+                          : "glass text-white/60 hover:text-white"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-2">
               {Object.entries(ICON_LABELS).map(([name, label]) => (
                 <button
@@ -257,15 +375,17 @@ export default function AdminDashboard({
             </div>
             <button
               type="submit"
-              disabled={busy === "add-project"}
+              disabled={busy === "add-project" || busy === "edit-project"}
               className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-black transition-all hover:shadow-[0_0_24px_rgba(34,197,94,0.4)] disabled:opacity-50"
             >
-              {busy === "add-project" ? (
+              {busy === "add-project" || busy === "edit-project" ? (
                 <LuLoader className="h-4 w-4 animate-spin" />
+              ) : editingProjectId ? (
+                <LuCheck className="h-4 w-4" />
               ) : (
                 <LuPlus className="h-4 w-4" />
               )}
-              Add Project
+              {editingProjectId ? "Save Changes" : "Add Project"}
             </button>
           </form>
 
@@ -273,7 +393,9 @@ export default function AdminDashboard({
             {projects.map((p) => (
               <li
                 key={p.id}
-                className="glass flex items-center justify-between gap-4 rounded-xl px-4 py-3"
+                className={`glass flex items-center justify-between gap-4 rounded-xl px-4 py-3 ${
+                  editingProjectId === p.id ? "ring-1 ring-green-400/50" : ""
+                }`}
               >
                 <div className="min-w-0">
                   <p className="truncate font-semibold">
@@ -291,6 +413,13 @@ export default function AdminDashboard({
                       return <Icon key={t} className="h-4 w-4" />;
                     })}
                   </div>
+                  <button
+                    onClick={() => startEditProject(p)}
+                    aria-label={`Edit ${p.title}`}
+                    className="grid h-9 w-9 place-items-center rounded-lg text-white/40 transition-colors hover:bg-green-500/10 hover:text-green-300"
+                  >
+                    <LuPencil className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={() => deleteProject(p.id)}
                     disabled={busy === `del-${p.id}`}

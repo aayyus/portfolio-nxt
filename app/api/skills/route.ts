@@ -6,12 +6,28 @@ import type { Skill } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const skills = await readJson<Skill[]>("skills");
-  return NextResponse.json(skills);
+/** Catches thrown errors (e.g. from lib/storage.ts) and turns them into a
+ * real JSON response instead of Next's default HTML 500 page — otherwise
+ * the client's res.json() call throws too and the real error is lost
+ * behind a generic "network error". */
+function safeHandler(handler: (request: Request) => Promise<NextResponse>) {
+  return async (request: Request) => {
+    try {
+      return await handler(request);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unexpected server error";
+      console.error(message);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+  };
 }
 
-export async function POST(request: Request) {
+export const GET = safeHandler(async () => {
+  const skills = await readJson<Skill[]>("skills");
+  return NextResponse.json(skills);
+});
+
+export const POST = safeHandler(async (request: Request) => {
   if (!isAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -36,9 +52,9 @@ export async function POST(request: Request) {
   const updated = [...skills, skill];
   await writeJson("skills", updated);
   return NextResponse.json(updated);
-}
+});
 
-export async function DELETE(request: Request) {
+export const DELETE = safeHandler(async (request: Request) => {
   if (!isAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -55,4 +71,4 @@ export async function DELETE(request: Request) {
   }
   await writeJson("skills", updated);
   return NextResponse.json(updated);
-}
+});

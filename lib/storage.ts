@@ -30,6 +30,14 @@ const ghHeaders = {
   "X-GitHub-Api-Version": "2022-11-28",
 };
 
+/** Reads the GitHub API's error body so failures say *why*, not just the
+ * status code (e.g. "Bad credentials" for an expired/wrong token, or "Not
+ * Found" for a wrong repo/branch name). */
+async function githubErrorDetail(res: Response): Promise<string> {
+  const body = await res.json().catch(() => null);
+  return body?.message ? `${res.status} ${body.message}` : String(res.status);
+}
+
 export async function readJson<T>(name: DataFile): Promise<T> {
   if (!GITHUB_TOKEN) {
     const raw = await fs.readFile(localPath(name), "utf8");
@@ -41,7 +49,7 @@ export async function readJson<T>(name: DataFile): Promise<T> {
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error(`GitHub read failed for ${name}: ${res.status}`);
+    throw new Error(`GitHub read failed for ${name}: ${await githubErrorDetail(res)}`);
   }
   return (await res.json()) as T;
 }
@@ -50,6 +58,13 @@ export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
   const body = JSON.stringify(data, null, 2) + "\n";
 
   if (!GITHUB_TOKEN) {
+    if (process.env.VERCEL) {
+      throw new Error(
+        "Cannot save changes: GITHUB_TOKEN is not set. On Vercel the filesystem is " +
+          "read-only, so admin edits need GITHUB_TOKEN (and GITHUB_REPO) configured " +
+          "as environment variables to commit changes to the repo instead."
+      );
+    }
     await fs.writeFile(localPath(name), body, "utf8");
     return;
   }
@@ -60,7 +75,9 @@ export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
     cache: "no-store",
   });
   if (!metaRes.ok) {
-    throw new Error(`GitHub metadata read failed for ${name}: ${metaRes.status}`);
+    throw new Error(
+      `GitHub metadata read failed for ${name}: ${await githubErrorDetail(metaRes)}`
+    );
   }
   const meta = (await metaRes.json()) as { sha: string };
 
@@ -75,7 +92,7 @@ export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
     }),
   });
   if (!putRes.ok) {
-    throw new Error(`GitHub write failed for ${name}: ${putRes.status}`);
+    throw new Error(`GitHub write failed for ${name}: ${await githubErrorDetail(putRes)}`);
   }
 }
 
@@ -86,6 +103,13 @@ export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
  */
 export async function writeBinary(repoPath: string, data: Buffer): Promise<void> {
   if (!GITHUB_TOKEN) {
+    if (process.env.VERCEL) {
+      throw new Error(
+        "Cannot upload image: GITHUB_TOKEN is not set. On Vercel the filesystem is " +
+          "read-only, so admin uploads need GITHUB_TOKEN (and GITHUB_REPO) configured " +
+          "as environment variables to commit the file to the repo instead."
+      );
+    }
     await fs.writeFile(path.join(process.cwd(), repoPath), data);
     return;
   }
@@ -110,6 +134,6 @@ export async function writeBinary(repoPath: string, data: Buffer): Promise<void>
     }),
   });
   if (!putRes.ok) {
-    throw new Error(`GitHub upload failed for ${repoPath}: ${putRes.status}`);
+    throw new Error(`GitHub upload failed for ${repoPath}: ${await githubErrorDetail(putRes)}`);
   }
 }

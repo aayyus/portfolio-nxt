@@ -6,6 +6,22 @@ import type { Project } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+/** Catches thrown errors (e.g. from lib/storage.ts) and turns them into a
+ * real JSON response instead of Next's default HTML 500 page — otherwise
+ * the client's res.json() call throws too and the real error is lost
+ * behind a generic "network error". */
+function safeHandler(handler: (request: Request) => Promise<NextResponse>) {
+  return async (request: Request) => {
+    try {
+      return await handler(request);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unexpected server error";
+      console.error(message);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+  };
+}
+
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024; // stay under Vercel's request limit
 const IMAGE_EXT: Record<string, string> = {
   "image/png": "png",
@@ -96,12 +112,12 @@ async function parseProjectForm(
   return { title, tag, link, cover, tech, align };
 }
 
-export async function GET() {
+export const GET = safeHandler(async () => {
   const projects = await readJson<Project[]>("projects");
   return NextResponse.json(projects);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = safeHandler(async (request: Request) => {
   if (!isAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -119,9 +135,9 @@ export async function POST(request: Request) {
   const updated = [project, ...projects];
   await writeJson("projects", updated);
   return NextResponse.json(updated);
-}
+});
 
-export async function PATCH(request: Request) {
+export const PATCH = safeHandler(async (request: Request) => {
   if (!isAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -149,9 +165,9 @@ export async function PATCH(request: Request) {
   updated[index] = { ...projects[index], ...parsed, id };
   await writeJson("projects", updated);
   return NextResponse.json(updated);
-}
+});
 
-export async function DELETE(request: Request) {
+export const DELETE = safeHandler(async (request: Request) => {
   if (!isAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -168,4 +184,4 @@ export async function DELETE(request: Request) {
   }
   await writeJson("projects", updated);
   return NextResponse.json(updated);
-}
+});

@@ -80,6 +80,26 @@ export default function AdminDashboard({
     return () => URL.revokeObjectURL(url);
   }, [imageFile]);
 
+  /** Reads a fetch Response as JSON, distinguishing "server returned an
+   * error" from "server returned something that isn't even JSON" (e.g. a
+   * 500 HTML error page from an uncaught exception) — both used to look
+   * like a generic "network error" even though the request reached the
+   * server fine. */
+  async function parseJsonResponse(
+    res: Response
+  ): Promise<{ data: any } | { message: string }> {
+    let data: any;
+    try {
+      data = await res.json();
+    } catch {
+      return { message: `Server error (HTTP ${res.status}) — check the server logs.` };
+    }
+    if (!res.ok) {
+      return { message: data?.error ?? `Request failed (HTTP ${res.status})` };
+    }
+    return { data };
+  }
+
   async function call(
     url: string,
     method: "POST" | "DELETE",
@@ -94,14 +114,14 @@ export default function AdminDashboard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Request failed");
+      const result = await parseJsonResponse(res);
+      if ("message" in result) {
+        setError(result.message);
         return null;
       }
-      return data;
+      return result.data;
     } catch {
-      setError("Network error — try again.");
+      setError("Couldn't reach the server — check your connection and try again.");
       return null;
     } finally {
       setBusy(null);
@@ -131,15 +151,15 @@ export default function AdminDashboard({
         method: isEdit ? "PATCH" : "POST",
         body: fd,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Request failed");
+      const result = await parseJsonResponse(res);
+      if ("message" in result) {
+        setError(result.message);
         return;
       }
-      setProjects(data);
+      setProjects(result.data);
       cancelEditProject();
     } catch {
-      setError("Network error — try again.");
+      setError("Couldn't reach the server — check your connection and try again.");
     } finally {
       setBusy(null);
     }

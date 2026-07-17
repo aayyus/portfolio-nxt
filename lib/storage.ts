@@ -2,138 +2,120 @@ import { promises as fs } from "fs";
 import path from "path";
 
 /**
- * Data lives in data/<name>.json inside the repo.
+ * Data lives in a two-column Postgres table (key, value jsonb); uploaded
+ * images go to Vercel Blob. Both are auto-provisioned in the Vercel
+ * dashboard — no manual token to create or watch expire.
  *
- * - Without GITHUB_TOKEN (local dev): read/write the files on disk.
- * - With GITHUB_TOKEN (Vercel): read/write through the GitHub contents API,
- *   so every admin edit becomes a commit and Vercel redeploys with the new data.
+ * - Without POSTGRES_URL (local dev): read/write data/<name>.json on disk,
+ *   and save uploaded images straight into /public.
+ * - With POSTGRES_URL (Vercel): read/write the Postgres table, and upload
+ *   images to Vercel Blob for a permanent public URL.
  */
 
 type DataFile = "projects" | "skills";
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPO = process.env.GITHUB_REPO ?? "aayyus/portfolio-nxt";
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH ?? "main";
+const POSTGRES_URL = process.env.POSTGRES_URL;
 
 const localPath = (name: DataFile) =>
   path.join(process.cwd(), "data", `${name}.json`);
 
-const apiUrl = (name: DataFile) =>
-  `https://api.github.com/repos/${GITHUB_REPO}/contents/data/${name}.json?ref=${GITHUB_BRANCH}`;
+// Lazily created so `postgres` (and its native bindings) are never
+// imported when running purely on the local fs fallback.
+let sqlPromise: Promise<import("postgres").Sql> | null = null;
+async function getSql() {
+  if (!POSTGRES_URL) {
+    throw new Error("POSTGRES_URL is not set");
+  }
+  if (!sqlPromise) {
+    sqlPromise = import("postgres").then((mod) => mod.default(POSTGRES_URL));
+  }
+  return sqlPromise;
+}
 
-const fileApiUrl = (repoPath: string) =>
-  `https://api.github.com/repos/${GITHUB_REPO}/contents/${repoPath}?ref=${GITHUB_BRANCH}`;
-
-const ghHeaders = {
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
-  Accept: "application/vnd.github+json",
-  "X-GitHub-Api-Version": "2022-11-28",
-};
-
-/** Reads the GitHub API's error body so failures say *why*, not just the
- * status code (e.g. "Bad credentials" for an expired/wrong token, or "Not
- * Found" for a wrong repo/branch name). */
-async function githubErrorDetail(res: Response): Promise<string> {
-  const body = await res.json().catch(() => null);
-  return body?.message ? `${res.status} ${body.message}` : String(res.status);
+let tableEnsured = false;
+async function ensureTable() {
+  if (tableEnsured) return;
+  const sql = await getSql();
+  await sql`
+    CREATE TABLE IF NOT EXISTS portfolio_data (
+      key text PRIMARY KEY,
+      value jsonb NOT NULL,
+      updated_at timestamptz NOT NULL DEFAULT now()
+    )
+  `;
+  tableEnsured = true;
 }
 
 export async function readJson<T>(name: DataFile): Promise<T> {
-  if (!GITHUB_TOKEN) {
+  if (!POSTGRES_URL) {
     const raw = await fs.readFile(localPath(name), "utf8");
     return JSON.parse(raw) as T;
   }
 
-  const res = await fetch(apiUrl(name), {
-    headers: { ...ghHeaders, Accept: "application/vnd.github.raw+json" },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error(`GitHub read failed for ${name}: ${await githubErrorDetail(res)}`);
+  await ensureTable();
+  const sql = await getSql();
+  const rows = await sql<{ value: T }[]>`
+    SELECT value FROM portfolio_data WHERE key = ${name}
+  `;
+  if (rows.length === 0) {
+    throw new Error(
+      `No "${name}" row in Postgres yet — run "npm run seed:db" once (with ` +
+        `POSTGRES_URL pointing at this database) to load the existing data/${name}.json.`
+    );
   }
-  return (await res.json()) as T;
+  return rows[0].value;
 }
 
 export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
-  const body = JSON.stringify(data, null, 2) + "\n";
-
-  if (!GITHUB_TOKEN) {
+  if (!POSTGRES_URL) {
     if (process.env.VERCEL) {
       throw new Error(
-        "Cannot save changes: GITHUB_TOKEN is not set. On Vercel the filesystem is " +
-          "read-only, so admin edits need GITHUB_TOKEN (and GITHUB_REPO) configured " +
-          "as environment variables to commit changes to the repo instead."
+        "Cannot save changes: POSTGRES_URL is not set. On Vercel the filesystem is " +
+          "read-only, so admin edits need a Postgres database connected in the " +
+          "project's Storage tab."
       );
     }
+    const body = JSON.stringify(data, null, 2) + "\n";
     await fs.writeFile(localPath(name), body, "utf8");
     return;
   }
 
-  // The contents API needs the current blob SHA to update an existing file.
-  const metaRes = await fetch(apiUrl(name), {
-    headers: ghHeaders,
-    cache: "no-store",
-  });
-  if (!metaRes.ok) {
-    throw new Error(
-      `GitHub metadata read failed for ${name}: ${await githubErrorDetail(metaRes)}`
-    );
-  }
-  const meta = (await metaRes.json()) as { sha: string };
-
-  const putRes = await fetch(apiUrl(name), {
-    method: "PUT",
-    headers: ghHeaders,
-    body: JSON.stringify({
-      message: `Update ${name} via admin panel`,
-      content: Buffer.from(body).toString("base64"),
-      sha: meta.sha,
-      branch: GITHUB_BRANCH,
-    }),
-  });
-  if (!putRes.ok) {
-    throw new Error(`GitHub write failed for ${name}: ${await githubErrorDetail(putRes)}`);
-  }
+  await ensureTable();
+  const sql = await getSql();
+  await sql`
+    INSERT INTO portfolio_data (key, value, updated_at)
+    VALUES (${name}, ${JSON.stringify(data)}::jsonb, now())
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
+  `;
 }
 
 /**
- * Save a binary file (e.g. an uploaded project cover) at a repo-relative
- * path like "public/my-project.png". Same split as writeJson: local disk
- * in dev, a GitHub commit in production.
+ * Save an uploaded cover image and return its public URL. Local dev writes
+ * straight into /public and returns a root-relative path; in production
+ * it uploads to Vercel Blob and returns the permanent blob URL.
  */
-export async function writeBinary(repoPath: string, data: Buffer): Promise<void> {
-  if (!GITHUB_TOKEN) {
+export async function writeBinary(
+  filename: string,
+  data: Buffer,
+  contentType: string
+): Promise<string> {
+  if (!POSTGRES_URL) {
     if (process.env.VERCEL) {
       throw new Error(
-        "Cannot upload image: GITHUB_TOKEN is not set. On Vercel the filesystem is " +
-          "read-only, so admin uploads need GITHUB_TOKEN (and GITHUB_REPO) configured " +
-          "as environment variables to commit the file to the repo instead."
+        "Cannot upload image: BLOB_READ_WRITE_TOKEN is not set. On Vercel the " +
+          "filesystem is read-only, so admin uploads need a Blob store connected " +
+          "in the project's Storage tab."
       );
     }
-    await fs.writeFile(path.join(process.cwd(), repoPath), data);
-    return;
+    await fs.writeFile(path.join(process.cwd(), "public", filename), data);
+    return `/${filename}`;
   }
 
-  // Existing file needs its SHA to be overwritten; a new file has none.
-  const metaRes = await fetch(fileApiUrl(repoPath), {
-    headers: ghHeaders,
-    cache: "no-store",
+  const { put } = await import("@vercel/blob");
+  const blob = await put(filename, data, {
+    access: "public",
+    contentType,
+    addRandomSuffix: true,
   });
-  const sha = metaRes.ok
-    ? ((await metaRes.json()) as { sha: string }).sha
-    : undefined;
-
-  const putRes = await fetch(fileApiUrl(repoPath), {
-    method: "PUT",
-    headers: ghHeaders,
-    body: JSON.stringify({
-      message: `Upload ${repoPath} via admin panel`,
-      content: data.toString("base64"),
-      ...(sha ? { sha } : {}),
-      branch: GITHUB_BRANCH,
-    }),
-  });
-  if (!putRes.ok) {
-    throw new Error(`GitHub upload failed for ${repoPath}: ${await githubErrorDetail(putRes)}`);
-  }
+  return blob.url;
 }

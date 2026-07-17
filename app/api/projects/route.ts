@@ -92,8 +92,11 @@ async function parseProjectForm(
     if (!slug) {
       return NextResponse.json({ error: "Title must contain letters or numbers" }, { status: 400 });
     }
-    await writeBinary(`public/${slug}.${ext}`, Buffer.from(await image.arrayBuffer()));
-    cover = `/${slug}.${ext}`;
+    cover = await writeBinary(
+      `${slug}.${ext}`,
+      Buffer.from(await image.arrayBuffer()),
+      image.type
+    );
   }
 
   if (!cover) {

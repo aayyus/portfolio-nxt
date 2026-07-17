@@ -82,9 +82,14 @@ export async function writeJson<T>(name: DataFile, data: T): Promise<void> {
 
   await ensureTable();
   const sql = await getSql();
+  // sql.json() lets the driver serialize `data` for the jsonb column itself.
+  // Interpolating a pre-`JSON.stringify`'d string with a bare `::jsonb` cast
+  // double-encodes it — the driver still treats the parameter as a JSON
+  // value to serialize, wrapping the already-stringified text in quotes
+  // again, so it lands as a jsonb *string* instead of a jsonb array/object.
   await sql`
     INSERT INTO portfolio_data (key, value, updated_at)
-    VALUES (${name}, ${JSON.stringify(data)}::jsonb, now())
+    VALUES (${name}, ${sql.json(data as any)}, now())
     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
   `;
 }
@@ -99,7 +104,10 @@ export async function writeBinary(
   data: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!POSTGRES_URL) {
+  // Blob has its own token, independent of Postgres — check it directly
+  // rather than piggybacking on POSTGRES_URL, since the two services are
+  // connected separately in the Vercel dashboard.
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     if (process.env.VERCEL) {
       throw new Error(
         "Cannot upload image: BLOB_READ_WRITE_TOKEN is not set. On Vercel the " +

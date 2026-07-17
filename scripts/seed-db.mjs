@@ -14,7 +14,11 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import postgres from "postgres";
-import "dotenv/config";
+import { config } from "dotenv";
+
+// dotenv/config only loads .env by default; this project's convention
+// (matching Next.js) is .env.local, so load that explicitly.
+config({ path: path.join(process.cwd(), ".env.local") });
 
 const POSTGRES_URL = process.env.POSTGRES_URL;
 
@@ -33,9 +37,11 @@ async function seed(name) {
   const raw = await readFile(filePath, "utf8");
   const value = JSON.parse(raw);
 
+  // sql.json() — not a pre-stringified `::jsonb` cast — avoids double
+  // JSON-encoding the value (see the comment in lib/storage.ts).
   await sql`
     INSERT INTO portfolio_data (key, value, updated_at)
-    VALUES (${name}, ${JSON.stringify(value)}::jsonb, now())
+    VALUES (${name}, ${sql.json(value)}, now())
     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
   `;
   console.log(`Seeded "${name}" (${value.length} items)`);

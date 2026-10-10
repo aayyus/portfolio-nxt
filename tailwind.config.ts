@@ -26,6 +26,10 @@ const config = {
     },
     extend: {
       colors: {
+        // Editorial palette (see globals.css). Stored as RGB channels so
+        // opacity modifiers like border-ink/40 work.
+        paper: "rgb(var(--paper) / <alpha-value>)",
+        ink: "rgb(var(--ink) / <alpha-value>)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -64,6 +68,10 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      transitionTimingFunction: {
+        // Long, soft deceleration used for text reveals and button rolls
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
         "move-up":{

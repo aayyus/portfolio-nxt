@@ -1,0 +1,209 @@
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+export const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * The content column: inset one column from each edge of a 12-col grid and
+ * edged with hairlines, so stacked sections form continuous vertical rails.
+ */
+export function Frame({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className="grid grid-cols-4 md:grid-cols-12">
+      <div
+        className={cn(
+          "col-span-4 border-x border-ink/40 md:col-span-10 md:col-start-2",
+          className
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** Small uppercase eyebrow over a huge lowercase word: "THE / developer." */
+export function SectionTitle({
+  eyebrow,
+  word,
+  punctuation = ".",
+  className,
+}: {
+  eyebrow: string;
+  word: string;
+  punctuation?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "border-b border-ink/40 px-4 pb-6 pt-24 md:px-6 md:pt-40",
+        className
+      )}
+    >
+      <p className="label opacity-70">{eyebrow}</p>
+      {/* The h2 (always visible) watches for scroll, not the word inside it:
+          the word starts pushed below the clip, so observing it directly can
+          read as never-in-view. Bottom padding leaves room for descenders. */}
+      <motion.h2
+        className="display-title mt-3 overflow-hidden pb-[0.2em] text-[clamp(3.5rem,10vw,6rem)]"
+        initial="hidden"
+        whileInView="shown"
+        viewport={{ once: true, margin: "-80px" }}
+      >
+        <motion.span
+          className="inline-block"
+          variants={{ hidden: { y: "100%" }, shown: { y: "0%" } }}
+          transition={{ duration: 0.9, ease: EASE }}
+        >
+          {word}
+          {punctuation}
+        </motion.span>
+      </motion.h2>
+    </div>
+  );
+}
+
+/** Outlined button whose label rolls up to a duplicate on hover. */
+export function RollButton({
+  href,
+  children,
+  className,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const external = href.startsWith("http");
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
+      className={cn(
+        "label group inline-flex h-11 items-center border border-ink px-5 transition-colors duration-300 hover:bg-ink hover:text-paper",
+        className
+      )}
+    >
+      <span className="relative block overflow-hidden py-1">
+        <span className="block transition-transform duration-500 ease-out-expo group-hover:-translate-y-[150%]">
+          {children}
+        </span>
+        <span
+          aria-hidden
+          className="absolute inset-0 block translate-y-[150%] py-1 transition-transform duration-500 ease-out-expo group-hover:translate-y-0"
+        >
+          {children}
+        </span>
+      </span>
+    </a>
+  );
+}
+
+/**
+ * Infinite horizontal ticker. Renders the children twice and slides the
+ * track by half its width, so each copy must be at least as wide as the
+ * container — repeat items as needed when calling.
+ */
+export function Marquee({
+  children,
+  className,
+  seconds = 30,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  seconds?: number;
+}) {
+  return (
+    <div className={cn("flex overflow-hidden", className)}>
+      <div
+        className="flex shrink-0 animate-marquee hover:[animation-play-state:paused]"
+        style={{ animationDuration: `${seconds}s` }}
+      >
+        {[0, 1].map((copy) => (
+          <div key={copy} aria-hidden={copy === 1} className="flex shrink-0 items-center">
+            {children}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Fades content up into place the first time it scrolls into view. */
+export function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.8, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** A word whose letters rise in one after another. */
+export function StaggerWord({
+  text,
+  className,
+  inView = false,
+  label,
+}: {
+  text: string;
+  className?: string;
+  /** Wait until scrolled into view instead of animating on mount. */
+  inView?: boolean;
+  /** Accessible name; the individual letters are hidden from screen readers. */
+  label?: string;
+}) {
+  // The wrapper (always visible) drives the animation and cascades it to the
+  // letters. Observing the letters themselves fails: they start pushed below
+  // the clip, so they can read as out of view until it's too late.
+  return (
+    <motion.span
+      role={label ? "img" : undefined}
+      aria-label={label}
+      className={cn("flex overflow-hidden pb-[0.24em]", className)}
+      initial="hidden"
+      animate={inView ? undefined : "shown"}
+      whileInView={inView ? "shown" : undefined}
+      viewport={{ once: true, margin: "-40px" }}
+      variants={{
+        hidden: {},
+        shown: { transition: { delayChildren: 0.12, staggerChildren: 0.06 } },
+      }}
+    >
+      {text.split("").map((ch, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          className="inline-block"
+          variants={{ hidden: { y: "105%" }, shown: { y: "0%" } }}
+          transition={{ duration: 0.9, ease: EASE }}
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+}

@@ -96,9 +96,6 @@ export default function CursorGlow() {
         animate={{
           scale: active ? 1.9 : 1,
           opacity: active ? 1 : 0.55,
-          borderColor: active
-            ? "rgba(74, 222, 128, 0.9)"
-            : "rgba(74, 222, 128, 0.65)",
         }}
         transition={{ duration: 0.2 }}
       />

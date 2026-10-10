@@ -36,8 +36,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={spaceGrotesk.className}> <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
-            enableSystem
+            defaultTheme="light"
+            enableSystem={false}
             disableTransitionOnChange
           >
             {children}

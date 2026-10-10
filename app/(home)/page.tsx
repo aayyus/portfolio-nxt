@@ -1,9 +1,10 @@
 import React from "react";
-import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import Skills from "./components/Skills";
-import Projects from "./components/Projects";
-import Footer from "./components/Footer";
+import SiteHeader from "./components/SiteHeader";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import Works from "./components/Works";
+import Stack from "./components/Stack";
+import Contact from "./components/Contact";
 import CursorGlow from "./components/CursorGlow";
 import { readJson } from "@/lib/storage";
 import type { Project, Skill } from "@/lib/types";
@@ -18,23 +19,17 @@ export default async function page() {
   ]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#030705] text-white">
+    <>
       <CursorGlow />
-
-      {/* Ambient backdrop: glow orbs */}
-      <div className="orb orb-green -top-40 -left-40 h-[34rem] w-[34rem]" />
-      <div className="orb orb-emerald top-1/4 -right-52 h-[38rem] w-[38rem]" />
-      <div className="orb orb-lime bottom-0 left-1/3 h-[30rem] w-[30rem]" />
-
-      <div className="relative z-10">
-        <Navbar />
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <HeroSection skills={skills} />
-          <Skills skills={skills} />
-          <Projects projects={projects} />
-        </div>
-        <Footer />
-      </div>
-    </main>
+      <SiteHeader />
+      {/* overflow-x-clip (not hidden) keeps the sticky header working */}
+      <main className="overflow-x-clip">
+        <Hero projects={projects} skills={skills} />
+        <About projectCount={projects.length} skillCount={skills.length} />
+        <Works projects={projects} />
+        <Stack skills={skills} />
+        <Contact />
+      </main>
+    </>
   );
 }

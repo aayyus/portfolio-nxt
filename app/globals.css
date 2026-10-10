@@ -33,6 +33,10 @@
     --ring: 240 10% 3.9%;
 
     --radius: 0.75rem;
+
+    /* Editorial palette: sage paper, oxblood ink */
+    --paper: 178 199 171;
+    --ink: 106 12 6;
   }
 
   .dark {
@@ -63,6 +67,10 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    /* Dark mode inverts to near-black paper with sage ink */
+    --paper: 13 14 11;
+    --ink: 178 199 171;
   }
 }
 
@@ -70,27 +78,51 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    background-color: rgb(var(--paper));
+    color: rgb(var(--ink));
+    @apply antialiased;
   }
   ::selection {
-    background: rgba(34, 197, 94, 0.4);
-    color: #fff;
+    background: rgb(var(--ink));
+    color: rgb(var(--paper));
+  }
+}
+
+@layer components {
+  /* Tiny tracked uppercase labels: clocks, eyebrows, tags, buttons */
+  .label {
+    @apply text-[0.65rem] uppercase leading-none tracking-[0.18em];
+  }
+  /* "developer." / "works." section titles */
+  .display-title {
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.85;
+  }
+  /* The giant "aayush." wordmark */
+  .wordmark {
+    font-weight: 700;
+    letter-spacing: -0.13em;
+    line-height: 0.8;
   }
 }
 
 @layer utilities {
-  /* Gradient headline text */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-200 via-green-400 to-emerald-500;
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
-  /* Frosted glass panel */
+  /* --- Admin panel only (it keeps its own dark glass look) --- */
   .glass {
     @apply bg-white/[0.04] border border-white/10 backdrop-blur-xl;
   }
-
-  /* Gradient border card: paint border with a conic gradient via mask */
   .gradient-border {
     position: relative;
   }
@@ -112,65 +144,24 @@
     mask-composite: exclude;
     pointer-events: none;
   }
-
-  /* Fades the dotted/grid background toward the edges */
-  .mask-radial-faded {
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, black 40%, transparent 100%);
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, black 40%, transparent 100%);
-  }
 }
 
-/* Light streak that sweeps across an element on hover */
-.shine {
-  position: relative;
-  overflow: hidden;
-}
-.shine::after {
-  content: "";
+/* Admin panel ambient glows */
+.orb {
   position: absolute;
-  inset: -1px;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(163, 255, 195, 0.18) 50%,
-    transparent 60%
-  );
-  transform: translateX(-150%) skewX(-10deg);
-  transition: transform 0.65s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-.shine:hover::after {
-  transform: translateX(150%) skewX(-10deg);
-}
-
-/* Cursor-tracking spotlight inside cards (position set via --mx/--my) */
-.spotlight {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0;
-  background: radial-gradient(
-    220px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(74, 222, 128, 0.14),
-    transparent 65%
-  );
-  transition: opacity 0.3s ease;
+  border-radius: 9999px;
+  filter: blur(90px);
   pointer-events: none;
 }
-.group:hover .spotlight {
-  opacity: 1;
+.orb-green {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.3), transparent 65%);
+}
+.orb-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.28), transparent 65%);
 }
 
-/* Headings glow softly under the cursor */
-.text-gradient {
-  transition: filter 0.3s ease;
-}
-.text-gradient:hover {
-  filter: drop-shadow(0 0 22px rgba(74, 222, 128, 0.5));
-}
-
-/* Custom cursor (mounted on the home page; hidden on touch devices) */
+/* Custom cursor (mounted on the home page; hidden on touch devices).
+   The paper-coloured outline keeps it visible over ink-filled areas. */
 body.custom-cursor,
 body.custom-cursor * {
   cursor: none !important;
@@ -188,27 +179,27 @@ body.custom-cursor * {
 .cursor-dot {
   width: 7px;
   height: 7px;
-  background: #4ade80;
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
+  background: rgb(var(--ink));
+  box-shadow: 0 0 0 1.5px rgb(var(--paper));
 }
 .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(74, 222, 128, 0.65);
+  border: 1px solid rgb(var(--ink) / 0.7);
+  box-shadow: 0 0 0 1px rgb(var(--paper) / 0.5);
 }
 .cursor-glow {
   width: 360px;
   height: 360px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.08), transparent 65%);
+  background: radial-gradient(circle, rgb(var(--ink) / 0.07), transparent 65%);
   z-index: 30;
 }
 
 /* Orbit rotor: spins by default, freezes in place (no snap-back) the
-   instant its .group parent is hovered, since a paused CSS animation
-   simply holds its current frame. Each chip inside carries a
-   .orbit-counter running the exact opposite spin on the same duration, so
-   as the whole group swings around the ring, the chip labels stay level
-   instead of tumbling like a blade. */
+   instant its .orbit-stage is hovered, since a paused CSS animation simply
+   holds its current frame. Each chip carries a .orbit-counter running the
+   exact opposite spin on the same duration, so labels stay level instead
+   of tumbling like a blade. */
 @keyframes orbit-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -223,29 +214,22 @@ body.custom-cursor * {
 .orbit-counter {
   animation: orbit-spin-reverse 24s linear infinite;
 }
-.group:hover .orbit-rotor,
-.group:hover .orbit-counter {
+.orbit-stage:hover .orbit-rotor,
+.orbit-stage:hover .orbit-counter {
   animation-play-state: paused;
 }
 
-/* Ambient scene glows */
-.orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  pointer-events: none;
-}
-.orb-green {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.3), transparent 65%);
-}
-.orb-emerald {
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.28), transparent 65%);
-}
-.orb-lime {
-  background: radial-gradient(circle, rgba(74, 222, 128, 0.2), transparent 65%);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .orbit-rotor,
+  .orbit-counter {
+    animation: none !important;
+  }
 }
 
-/* Slim custom scrollbar to match the dark scene */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -253,9 +237,9 @@ body.custom-cursor * {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(34, 197, 94, 0.35);
+  background: rgb(var(--ink) / 0.35);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 197, 94, 0.6);
+  background: rgb(var(--ink) / 0.6);
 }

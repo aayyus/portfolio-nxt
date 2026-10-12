@@ -1,6 +1,6 @@
 import React from "react";
 import { site, socials } from "@/lib/site";
-import { Frame, Reveal, RollButton, SectionTitle, StaggerWord } from "./ui";
+import { Frame, Reveal, RollButton, RollText, SectionTitle, StaggerWord } from "./ui";
 
 export default function Contact() {
   const links = [
@@ -32,9 +32,9 @@ export default function Contact() {
                     href={link.href}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noreferrer" : undefined}
-                    className="group flex items-center justify-between gap-4 p-4 transition-colors duration-300 hover:bg-ink hover:text-paper md:px-6 md:py-5"
+                    className="group group/roll flex items-center justify-between gap-4 p-4 transition-colors duration-300 hover:bg-ink hover:text-paper md:px-6 md:py-5"
                   >
-                    <span className="label opacity-70 group-hover:opacity-100">{link.label}</span>
+                    <RollText className="label opacity-70 group-hover:opacity-100">{link.label}</RollText>
                     <span className="truncate text-sm">
                       {link.value}{" "}
                       <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
@@ -62,8 +62,8 @@ export default function Contact() {
             © {new Date().getFullYear()} {site.name}
           </span>
           <span className="hidden sm:inline">Shopify · Klaviyo · Meta</span>
-          <a href="#top" className="hover:opacity-70">
-            Back to top ↑
+          <a href="#top" className="group/roll">
+            <RollText>Back to top ↑</RollText>
           </a>
         </div>
       </footer>

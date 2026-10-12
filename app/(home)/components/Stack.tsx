@@ -6,7 +6,7 @@ import { Frame, SectionTitle } from "./ui";
 /**
  * Numbered rows spanning the full width: the number sits in the left
  * gutter, and the name/description cells line up with the framed rails.
- * Rows flip to ink on hover.
+ * Rows grow taller and flip to ink on hover.
  */
 export default function Stack({ skills }: { skills: Skill[] }) {
   return (
@@ -21,7 +21,7 @@ export default function Stack({ skills }: { skills: Skill[] }) {
           return (
             <li
               key={skill.id}
-              className="group grid grid-cols-4 border-b border-ink/40 transition-colors duration-300 hover:bg-ink hover:text-paper md:grid-cols-12"
+              className="group grid grid-cols-4 border-b border-ink/40 transition-[min-height,background-color,color] duration-600 ease-out-expo hover:bg-ink hover:text-paper md:min-h-[7.5rem] md:grid-cols-12 md:hover:min-h-[11rem]"
             >
               <span className="label col-span-1 p-4 tabular-nums opacity-60 md:pt-9">
                 {String(i + 1).padStart(2, "0")}

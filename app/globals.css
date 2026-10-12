@@ -78,8 +78,20 @@
   * {
     @apply border-border;
   }
-  html {
-    scroll-behavior: smooth;
+  /* Lenis drives scrolling; native smooth scroll would fight it */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  /* Set pre-paint by Intro when it shouldn't play */
+  .intro-skip .intro-overlay {
+    display: none;
   }
   body {
     background-color: rgb(var(--paper));
@@ -220,9 +232,6 @@ body.custom-cursor * {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   .animate-marquee,
   .orbit-rotor,
   .orbit-counter {

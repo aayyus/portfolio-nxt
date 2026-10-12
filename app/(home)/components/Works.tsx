@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { getIcon, ICON_LABELS } from "@/lib/icons";
 import { site } from "@/lib/site";
 import type { Project } from "@/lib/types";
-import { EASE, Frame, Marquee, SectionTitle } from "./ui";
+import { EASE, Frame, Marquee, RollText, SectionTitle } from "./ui";
 
 // Typical width/height of a desktop site screenshot, used until the real
 // image has loaded and reported its own proportions.
@@ -51,7 +51,7 @@ export default function Works({ projects }: { projects: Project[] }) {
   return (
     <section id="work" className="scroll-mt-16">
       <Frame>
-        <SectionTitle eyebrow="Selected" word="works" />
+        <SectionTitle eyebrow="My" word="works" />
         <div
           tabIndex={0}
           aria-label="Project viewer — use the arrow keys to browse"
@@ -79,7 +79,7 @@ export default function Works({ projects }: { projects: Project[] }) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`Visit ${p.title}`}
-                className="absolute inset-0"
+                className="group/img absolute inset-0"
                 initial={{ clipPath: "inset(0 0 0 100%)" }}
                 animate={{ clipPath: "inset(0 0 0 0%)" }}
                 exit={{ opacity: 0 }}
@@ -93,7 +93,7 @@ export default function Works({ projects }: { projects: Project[] }) {
                   // Screenshots are full of small text, which the default
                   // quality (75) visibly blurs
                   quality={90}
-                  className="object-contain"
+                  className="object-contain transition-transform duration-700 ease-out group-hover/img:scale-[1.03]"
                   onLoad={(e) => {
                     const img = e.currentTarget;
                     if (img.naturalWidth && img.naturalHeight) {
@@ -164,10 +164,10 @@ export default function Works({ projects }: { projects: Project[] }) {
                   href={p.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="group inline-flex items-center gap-2 text-lg tracking-[-0.01em] md:text-xl"
+                  className="group/roll inline-flex items-center gap-2 text-lg tracking-[-0.01em] md:text-xl"
                 >
-                  VISIT SITE
-                  <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  <RollText>VISIT SITE</RollText>
+                  <span className="transition-transform duration-450 ease-roll group-hover/roll:translate-x-1">
                     &gt;
                   </span>
                 </a>

@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { clocks, navLinks, site, socials } from "@/lib/site";
-import { EASE, Marquee } from "./ui";
+import { EASE, Marquee, RollText } from "./ui";
+import { lockScroll } from "@/lib/motion";
 
 function useMounted() {
   const [mounted, setMounted] = useState(false);
@@ -70,9 +71,9 @@ function ThemeToggle() {
       type="button"
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
-      className="label flex h-full items-center gap-2 px-4 transition-colors duration-300 hover:bg-ink hover:text-paper"
+      className="label group/roll flex h-full items-center gap-2 px-4 transition-colors duration-300 hover:bg-ink hover:text-paper"
     >
-      {dark ? "Dark" : "Light"}
+      <RollText>{dark ? "Dark" : "Light"}</RollText>
       <span className={cn("h-2.5 w-2.5 border border-current", dark && "bg-current")} />
     </button>
   );
@@ -83,10 +84,10 @@ function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => void }) 
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
+    lockScroll(true);
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      lockScroll(false);
     };
   }, [open, onClose]);
 
@@ -111,9 +112,9 @@ function MenuOverlay({ open, onClose }: { open: boolean; onClose: () => void }) 
             <button
               type="button"
               onClick={onClose}
-              className="label border-l border-paper/30 px-6 transition-colors hover:bg-paper hover:text-ink"
+              className="label group/roll border-l border-paper/30 px-6 transition-colors hover:bg-paper hover:text-ink"
             >
-              Close
+              <RollText>Close</RollText>
             </button>
           </div>
 

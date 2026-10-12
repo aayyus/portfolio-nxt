@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { onIntroDone } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +74,34 @@ export function SectionTitle({
   );
 }
 
-/** Outlined button whose label rolls up to a duplicate on hover. */
+/**
+ * Text that rolls on hover: the label drops out the bottom while an
+ * identical copy drops in from the top. Trigger it from any ancestor with
+ * the `group/roll` class.
+ */
+export function RollText({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={cn("relative block overflow-hidden leading-[1.35]", className)}>
+      <span className="block transition-transform duration-450 ease-roll group-hover/roll:translate-y-full">
+        {children}
+      </span>
+      <span
+        aria-hidden
+        className="absolute inset-0 block -translate-y-full transition-transform duration-450 ease-roll group-hover/roll:translate-y-0"
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
+/** Outlined button that fills with ink on hover while its label rolls. */
 export function RollButton({
   href,
   children,
@@ -90,21 +118,11 @@ export function RollButton({
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
       className={cn(
-        "label group inline-flex h-11 items-center border border-ink px-5 transition-colors duration-300 hover:bg-ink hover:text-paper",
+        "label group/roll inline-flex h-11 items-center border border-ink px-5 transition-colors duration-450 ease-roll hover:bg-ink hover:text-paper",
         className
       )}
     >
-      <span className="relative block overflow-hidden py-1">
-        <span className="block transition-transform duration-500 ease-out-expo group-hover:-translate-y-[150%]">
-          {children}
-        </span>
-        <span
-          aria-hidden
-          className="absolute inset-0 block translate-y-[150%] py-1 transition-transform duration-500 ease-out-expo group-hover:translate-y-0"
-        >
-          {children}
-        </span>
-      </span>
+      <RollText>{children}</RollText>
     </a>
   );
 }
@@ -167,15 +185,20 @@ export function StaggerWord({
   text,
   className,
   inView = false,
+  afterIntro = false,
   label,
 }: {
   text: string;
   className?: string;
   /** Wait until scrolled into view instead of animating on mount. */
   inView?: boolean;
+  /** When animating on mount, hold until the opening intro has finished. */
+  afterIntro?: boolean;
   /** Accessible name; the individual letters are hidden from screen readers. */
   label?: string;
 }) {
+  const ready = useIntroDone(afterIntro);
+
   // The wrapper (always visible) drives the animation and cascades it to the
   // letters. Observing the letters themselves fails: they start pushed below
   // the clip, so they can read as out of view until it's too late.
@@ -185,7 +208,7 @@ export function StaggerWord({
       aria-label={label}
       className={cn("flex overflow-hidden pb-[0.24em]", className)}
       initial="hidden"
-      animate={inView ? undefined : "shown"}
+      animate={inView ? undefined : ready ? "shown" : "hidden"}
       whileInView={inView ? "shown" : undefined}
       viewport={{ once: true, margin: "-40px" }}
       variants={{
@@ -206,4 +229,11 @@ export function StaggerWord({
       ))}
     </motion.span>
   );
+}
+
+/** True once the opening intro has finished (immediately if not waiting). */
+export function useIntroDone(wait = true) {
+  const [done, setDone] = useState(!wait);
+  useEffect(() => (wait ? onIntroDone(() => setDone(true)) : undefined), [wait]);
+  return done;
 }

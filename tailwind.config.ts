@@ -69,9 +69,17 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionDuration: {
+        // Named so they don't collide with tailwindcss-animate's duration-*
+        450: "450ms",
+        600: "600ms",
+        900: "900ms",
+      },
       transitionTimingFunction: {
         // Long, soft deceleration used for text reveals and button rolls
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+        // Symmetric ease for the hover text roll
+        roll: "cubic-bezier(0.65, 0, 0.35, 1)",
       },
       keyframes: {
         "move-up":{

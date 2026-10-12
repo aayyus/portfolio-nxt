@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { getIcon } from "@/lib/icons";
 import { site } from "@/lib/site";
 import type { Skill } from "@/lib/types";
-import { EASE, StaggerWord } from "./ui";
+import { EASE, StaggerWord, useIntroDone } from "./ui";
 
 const chipCls =
   "orbit-counter label flex cursor-default items-center gap-1.5 whitespace-nowrap border border-ink/50 bg-paper px-2.5 py-1.5 transition-colors duration-300 hover:bg-ink hover:text-paper";
@@ -147,18 +147,21 @@ function Orbit({ skills }: { skills: Skill[] }) {
   );
 }
 
-/** Black-and-white portrait for the hero's tall right-hand cell. */
+/** Black-and-white portrait that drifts sideways on hover. Pre-scaled so
+ * the drift never exposes an edge. */
 function Portrait() {
   return (
-    <div className="relative h-full min-h-[22rem] overflow-hidden bg-ink/10">
-      <Image
-        src="/aayush.jpg"
-        alt={site.name}
-        fill
-        priority
-        sizes="(max-width: 768px) 100vw, 34vw"
-        className="object-cover object-[55%_40%] contrast-[1.15] grayscale"
-      />
+    <div className="group/side relative h-full min-h-[22rem] overflow-hidden bg-ink/10">
+      <div className="absolute inset-0 scale-[1.07] transition-transform duration-900 ease-out-expo group-hover/side:-translate-x-[3%]">
+        <Image
+          src="/aayush.jpg"
+          alt={site.name}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 34vw"
+          className="object-cover object-[55%_40%] contrast-[1.15] grayscale"
+        />
+      </div>
     </div>
   );
 }
@@ -199,6 +202,8 @@ function Monogram() {
 }
 
 export default function Hero({ skills }: { skills: Skill[] }) {
+  const introDone = useIntroDone();
+
   return (
     <section id="top" className="flex flex-col border-b border-ink/40 md:min-h-[calc(100svh-4rem)]">
       <div className="grid flex-1 grid-cols-4 md:grid-cols-12">
@@ -222,6 +227,7 @@ export default function Hero({ skills }: { skills: Skill[] }) {
             <StaggerWord
               text={`${site.wordmark}.`}
               label={`${site.name}, ${site.roles[0]}`}
+              afterIntro
               className="wordmark text-[clamp(5rem,15vw,15rem)]"
             />
           </h1>
@@ -231,7 +237,7 @@ export default function Hero({ skills }: { skills: Skill[] }) {
             <motion.li
               key={role}
               initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={introDone ? { opacity: 1, x: 0 } : undefined}
               transition={{ delay: 0.6 + i * 0.1, duration: 0.8, ease: EASE }}
             >
               {role}

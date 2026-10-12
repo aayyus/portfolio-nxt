@@ -6,6 +6,8 @@ import Works from "./components/Works";
 import Stack from "./components/Stack";
 import Contact from "./components/Contact";
 import CursorGlow from "./components/CursorGlow";
+import SmoothScroll from "./components/SmoothScroll";
+import Intro from "./components/Intro";
 import { readJson } from "@/lib/storage";
 import type { Project, Skill } from "@/lib/types";
 
@@ -20,6 +22,8 @@ export default async function page() {
 
   return (
     <>
+      <SmoothScroll />
+      <Intro />
       <CursorGlow />
       <SiteHeader />
       {/* overflow-x-clip (not hidden) keeps the sticky header working */}

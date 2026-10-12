@@ -34,9 +34,9 @@
 
     --radius: 0.75rem;
 
-    /* Editorial palette: sage paper, oxblood ink */
-    --paper: 178 199 171;
-    --ink: 106 12 6;
+    /* Editorial palette: cream paper, forest ink */
+    --paper: 237 230 214;
+    --ink: 31 61 43;
   }
 
   .dark {
@@ -68,9 +68,9 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
 
-    /* Dark mode inverts to near-black paper with sage ink */
-    --paper: 13 14 11;
-    --ink: 178 199 171;
+    /* Dark mode inverts to green-black paper with cream ink */
+    --paper: 14 20 16;
+    --ink: 237 230 214;
   }
 }
 

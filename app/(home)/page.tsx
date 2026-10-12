@@ -24,7 +24,7 @@ export default async function page() {
       <SiteHeader />
       {/* overflow-x-clip (not hidden) keeps the sticky header working */}
       <main className="overflow-x-clip">
-        <Hero projects={projects} skills={skills} />
+        <Hero skills={skills} />
         <About projectCount={projects.length} skillCount={skills.length} />
         <Works projects={projects} />
         <Stack skills={skills} />

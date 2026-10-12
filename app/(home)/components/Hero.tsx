@@ -2,10 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { getIcon } from "@/lib/icons";
-import { objectPosition, site } from "@/lib/site";
-import type { Project, Skill } from "@/lib/types";
+import { site } from "@/lib/site";
+import type { Skill } from "@/lib/types";
 import { EASE, StaggerWord } from "./ui";
 
 const chipCls =
@@ -147,55 +147,19 @@ function Orbit({ skills }: { skills: Skill[] }) {
   );
 }
 
-/** Cycles through project covers, desaturated until hovered. */
-function FeaturedReel({ projects }: { projects: Project[] }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (projects.length < 2) return;
-    const id = setInterval(() => setIndex((n) => (n + 1) % projects.length), 4500);
-    return () => clearInterval(id);
-  }, [projects.length]);
-
-  if (projects.length === 0) return null;
-  const p = projects[index];
-
+/** Black-and-white portrait for the hero's tall right-hand cell. */
+function Portrait() {
   return (
-    <a
-      href={p.link}
-      target="_blank"
-      rel="noreferrer"
-      className="group relative block h-full min-h-[18rem] overflow-hidden bg-ink/10"
-    >
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={p.id}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.08 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: EASE }}
-        >
-          <Image
-            src={p.cover}
-            alt={p.title}
-            fill
-            priority={index === 0}
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className={`object-cover ${objectPosition[p.align ?? "top"]} contrast-[1.1] grayscale transition-[filter] duration-700 group-hover:grayscale-0`}
-          />
-        </motion.div>
-      </AnimatePresence>
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-4 pt-16 text-white">
-        <div className="min-w-0">
-          <p className="label opacity-75">Featured work</p>
-          <p className="mt-2 truncate text-lg font-semibold tracking-[-0.02em]">{p.title}</p>
-        </div>
-        <p className="label shrink-0 tabular-nums opacity-75">
-          {String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-        </p>
-      </div>
-    </a>
+    <div className="relative h-full min-h-[22rem] overflow-hidden bg-ink/10">
+      <Image
+        src="/aayush.jpg"
+        alt={site.name}
+        fill
+        priority
+        sizes="(max-width: 768px) 100vw, 34vw"
+        className="object-cover object-[55%_40%] contrast-[1.15] grayscale"
+      />
+    </div>
   );
 }
 
@@ -234,7 +198,7 @@ function Monogram() {
   );
 }
 
-export default function Hero({ projects, skills }: { projects: Project[]; skills: Skill[] }) {
+export default function Hero({ skills }: { skills: Skill[] }) {
   return (
     <section id="top" className="flex flex-col border-b border-ink/40 md:min-h-[calc(100svh-4rem)]">
       <div className="grid flex-1 grid-cols-4 md:grid-cols-12">
@@ -248,7 +212,7 @@ export default function Hero({ projects, skills }: { projects: Project[]; skills
           <Orbit skills={skills} />
         </div>
         <div className="col-span-4 min-h-[18rem]">
-          <FeaturedReel projects={projects} />
+          <Portrait />
         </div>
       </div>
 

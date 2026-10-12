@@ -219,7 +219,7 @@ export default function Works({ projects }: { projects: Project[] }) {
               key={i}
               className="flex items-center whitespace-nowrap text-2xl font-semibold uppercase tracking-[-0.03em] md:text-4xl"
             >
-              <span className="px-6">Available for new projects</span>
+              <span className="px-6">Click to contact</span>
               <span className="opacity-40">/</span>
             </span>
           ))}

@@ -61,7 +61,7 @@ export default function Contact() {
           <span>
             © {new Date().getFullYear()} {site.name}
           </span>
-          <span className="hidden sm:inline">Shopify · Klaviyo · Meta</span>
+          <span className="hidden sm:inline">Shopify · Klaviyo · Meta · CRO</span>
           <a href="#top" className="group/roll">
             <RollText>Back to top ↑</RollText>
           </a>

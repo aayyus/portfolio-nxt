@@ -40,7 +40,7 @@ function WorldClock() {
   );
 
   return (
-    <Marquee className="label w-full" seconds={45}>
+    <Marquee className="label w-full" seconds={clocks.length * 6}>
       {clocks.map(({ city }, i) => {
         const home = city === site.homeCity;
         const time = now ? formatters[i].time.format(now) : "--:--:--";

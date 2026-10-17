@@ -76,7 +76,10 @@ export default function Intro() {
               transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
             >
               <div className="flex items-start justify-between">
-                <span className="text-2xl font-bold tracking-[-0.08em]">{site.wordmark}.</span>
+                <span className="flex items-center gap-2.5 text-2xl font-bold tracking-[-0.08em]">
+                  <img src="/logo.svg" alt="" className="h-8 w-8" />
+                  {site.wordmark}.
+                </span>
                 <span className="label opacity-70">{site.roles[0]}</span>
               </div>
               <div className="flex items-end justify-between gap-4">

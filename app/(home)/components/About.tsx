@@ -20,7 +20,7 @@ export default function About({
     <section id="about" className="scroll-mt-16">
       <Frame>
         <SectionTitle eyebrow="The" word="developer" />
-        <div className="grid md:grid-cols-10">
+        <div className="grid border-b border-ink/40 md:grid-cols-10">
           <div className="border-b border-ink/40 p-4 md:col-span-4 md:border-b-0 md:border-r md:p-6 md:pb-10">
             <Reveal>
               <p className="text-lg leading-relaxed md:text-xl">

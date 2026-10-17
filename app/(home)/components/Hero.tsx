@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { getIcon } from "@/lib/icons";
 import { site } from "@/lib/site";
 import type { Skill } from "@/lib/types";
-import { EASE, StaggerWord, useIntroDone } from "./ui";
+import { EASE, Logo, StaggerWord, useIntroDone } from "./ui";
 
 const chipCls =
   "orbit-counter label flex cursor-default items-center gap-1.5 whitespace-nowrap border border-ink/50 bg-paper px-2.5 py-1.5 transition-colors duration-300 hover:bg-ink hover:text-paper";
@@ -166,38 +166,15 @@ function Portrait() {
   );
 }
 
-/** Line-art monogram with a slowly turning dashed ring. */
+/** The logo inside a slowly turning dashed ring. */
 function Monogram() {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      className="h-20 w-20 md:h-28 md:w-28"
-      fill="none"
-      stroke="currentColor"
-      aria-hidden
-    >
-      <circle cx="50" cy="50" r="46" strokeWidth="0.8" />
-      <circle
-        cx="50"
-        cy="50"
-        r="39"
-        strokeWidth="0.8"
-        strokeDasharray="2 3"
-        opacity="0.6"
-        className="origin-center animate-[spin_30s_linear_infinite] [transform-box:fill-box]"
-      />
-      <text
-        x="50"
-        y="61"
-        textAnchor="middle"
-        fontSize="34"
-        fontWeight="700"
-        letterSpacing="-3"
-        strokeWidth="0.9"
-      >
-        as
-      </text>
-    </svg>
+    <div className="relative grid h-20 w-20 place-items-center md:h-28 md:w-28">
+      <svg viewBox="0 0 100 100" className="absolute inset-0 animate-[spin_30s_linear_infinite]" aria-hidden>
+        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" opacity="0.6" />
+      </svg>
+      <Logo className="h-[78%] w-[78%]" title={`${site.name} logo`} />
+    </div>
   );
 }
 

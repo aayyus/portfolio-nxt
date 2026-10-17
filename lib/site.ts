@@ -5,7 +5,12 @@ export const site = {
   name: "Aayush Sharma",
   wordmark: "aayush",
   email: "aayushat902@gmail.com",
-  roles: ["Shopify Developer", "Klaviyo Automation", "Meta Advertising"],
+  roles: [
+    "Shopify Developer",
+    "Klaviyo Automation",
+    "Meta Advertising",
+    "Conversion Rate Optimisation",
+  ],
   /** City highlighted in the header's world-clock ticker. */
   homeCity: "Kathmandu",
 };
@@ -27,14 +32,32 @@ export const navLinks = [
   { label: "contact", href: "#contact" },
 ];
 
+// One city per major time zone, west to east, so the ticker runs around
+// the whole globe.
 export const clocks = [
-  { city: "Kathmandu", tz: "Asia/Kathmandu" },
-  { city: "Sydney", tz: "Australia/Sydney" },
-  { city: "Tokyo", tz: "Asia/Tokyo" },
-  { city: "Dubai", tz: "Asia/Dubai" },
-  { city: "London", tz: "Europe/London" },
-  { city: "New York", tz: "America/New_York" },
+  { city: "Honolulu", tz: "Pacific/Honolulu" },
+  { city: "Anchorage", tz: "America/Anchorage" },
   { city: "Los Angeles", tz: "America/Los_Angeles" },
+  { city: "Denver", tz: "America/Denver" },
+  { city: "Chicago", tz: "America/Chicago" },
+  { city: "New York", tz: "America/New_York" },
+  { city: "São Paulo", tz: "America/Sao_Paulo" },
+  { city: "Reykjavik", tz: "Atlantic/Reykjavik" },
+  { city: "London", tz: "Europe/London" },
+  { city: "Paris", tz: "Europe/Paris" },
+  { city: "Cairo", tz: "Africa/Cairo" },
+  { city: "Moscow", tz: "Europe/Moscow" },
+  { city: "Dubai", tz: "Asia/Dubai" },
+  { city: "Karachi", tz: "Asia/Karachi" },
+  { city: "Delhi", tz: "Asia/Kolkata" },
+  { city: "Kathmandu", tz: "Asia/Kathmandu" },
+  { city: "Dhaka", tz: "Asia/Dhaka" },
+  { city: "Bangkok", tz: "Asia/Bangkok" },
+  { city: "Singapore", tz: "Asia/Singapore" },
+  { city: "Tokyo", tz: "Asia/Tokyo" },
+  { city: "Adelaide", tz: "Australia/Adelaide" },
+  { city: "Sydney", tz: "Australia/Sydney" },
+  { city: "Auckland", tz: "Pacific/Auckland" },
 ];
 
 // Written out in full (not built as `object-${align}`) so Tailwind's

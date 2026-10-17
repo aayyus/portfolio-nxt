@@ -237,3 +237,35 @@ export function useIntroDone(wait = true) {
   useEffect(() => (wait ? onIntroDone(() => setDone(true)) : undefined), [wait]);
   return done;
 }
+
+/**
+ * The "A" logo. Drawn with the theme's ink and paper rather than fixed
+ * colours, so it inverts with dark mode. (The favicon in app/icon.svg is
+ * the fixed-colour version.)
+ */
+export function Logo({ className, title }: { className?: string; title?: string }) {
+  return (
+    <svg
+      viewBox="208 38 264 264"
+      className={className}
+      role={title ? "img" : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+    >
+      <circle cx="340" cy="170" r="130" className="fill-ink" />
+      <circle cx="340" cy="170" r="118" fill="none" strokeWidth="1.5" className="stroke-paper" />
+      <path
+        d="M288 238 L340 102 L392 238"
+        fill="none"
+        strokeWidth="18"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="stroke-paper"
+      />
+      {/* Ink outline under the crossbar cuts small gaps where it meets the legs */}
+      <path d="M296 196 Q345 184 408 188" fill="none" strokeWidth="20" strokeLinecap="round" className="stroke-ink" />
+      <path d="M296 196 Q345 184 408 188" fill="none" strokeWidth="10" strokeLinecap="round" className="stroke-paper" />
+      <circle cx="340" cy="102" r="5" className="fill-ink" />
+    </svg>
+  );
+}

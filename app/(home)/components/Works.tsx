@@ -13,16 +13,38 @@ import { EASE, Frame, Marquee, RollText, SectionTitle } from "./ui";
 // image has loaded and reported its own proportions.
 const DEFAULT_RATIO = 1.9;
 
+// How far (px, with a boost for a fast flick) a drag must travel to switch
+const SWIPE_PX = 70;
+// Movement allowed between press and release for it to still be a click
+const CLICK_SLOP_PX = 6;
+
+// Going forward the new image wipes in from the right; going back, from the
+// left — so it follows the direction you swiped.
+const wipe = {
+  enter: (dir: 1 | -1) => ({
+    clipPath: dir === 1 ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+  }),
+  shown: { clipPath: "inset(0 0% 0 0%)" },
+  exit: { opacity: 0 },
+};
+
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function Works({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState(0);
+  // Which way the last change went, so the image wipes in from that side
+  const [direction, setDirection] = useState<1 | -1>(1);
+  // Where the pointer went down, to tell a drag's release from a real click
+  const pressedAt = useRef<{ x: number; y: number } | null>(null);
   const [ratios, setRatios] = useState<Record<string, number>>({});
   const railRef = useRef<HTMLDivElement>(null);
   const count = projects.length;
 
   const go = useCallback(
-    (dir: 1 | -1) => setActive((i) => (i + dir + count) % count),
+    (dir: 1 | -1) => {
+      setDirection(dir);
+      setActive((i) => (i + dir + count) % count);
+    },
     [count]
   );
 
@@ -72,17 +94,46 @@ export default function Works({ projects }: { projects: Project[] }) {
             className="relative overflow-hidden border-b border-ink/40 bg-ink/10 transition-[aspect-ratio] duration-500"
             style={{ aspectRatio: String(ratios[p.id] ?? DEFAULT_RATIO) }}
           >
-            <AnimatePresence initial={false}>
-              <motion.a
+            {/* Drag or swipe sideways to change project. It springs back to
+                centre either way; a long or fast enough throw moves on. The
+                vertical pan is left to the browser so the page still scrolls
+                on touch screens. */}
+            <motion.div
+              className="group/img absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.25}
+              onDragEnd={(_, info) => {
+                const swipe = info.offset.x + info.velocity.x * 0.2;
+                if (swipe < -SWIPE_PX) go(1);
+                else if (swipe > SWIPE_PX) go(-1);
+              }}
+              onPointerDownCapture={(e) => {
+                pressedAt.current = { x: e.clientX, y: e.clientY };
+              }}
+              // Releasing a drag also fires a click; only let it open the
+              // project if the pointer barely moved. Measured directly rather
+              // than via drag callbacks, which don't always pair up.
+              onClickCapture={(e) => {
+                const start = pressedAt.current;
+                if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > CLICK_SLOP_PX) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
+              // A genuine click opens whichever project is current right now,
+              // even if an outgoing image is still fading underneath
+              onClick={() => window.open(p.link, "_blank", "noopener,noreferrer")}
+            >
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
                 key={p.id}
-                href={p.link}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Visit ${p.title}`}
-                className="group/img absolute inset-0"
-                initial={{ clipPath: "inset(0 0 0 100%)" }}
-                animate={{ clipPath: "inset(0 0 0 0%)" }}
-                exit={{ opacity: 0 }}
+                className="absolute inset-0"
+                custom={direction}
+                variants={wipe}
+                initial="enter"
+                animate="shown"
+                exit="exit"
                 transition={{ duration: 0.9, ease: EASE }}
               >
                 <Image
@@ -93,6 +144,7 @@ export default function Works({ projects }: { projects: Project[] }) {
                   // Screenshots are full of small text, which the default
                   // quality (75) visibly blurs
                   quality={90}
+                  draggable={false}
                   className="object-contain transition-transform duration-700 ease-out group-hover/img:scale-[1.03]"
                   onLoad={(e) => {
                     const img = e.currentTarget;
@@ -102,8 +154,19 @@ export default function Works({ projects }: { projects: Project[] }) {
                     }
                   }}
                 />
-              </motion.a>
+              </motion.div>
             </AnimatePresence>
+            {/* For keyboard and screen-reader users. Pointer input passes
+                through to the drag area (Framer won't start a drag on a link),
+                which opens the current project on a genuine click instead. */}
+            <a
+              href={p.link}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Visit ${p.title}`}
+              className="pointer-events-none absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink"
+            />
+            </motion.div>
           </div>
 
           <div className="flex flex-col md:grid md:grid-cols-10">
@@ -183,7 +246,10 @@ export default function Works({ projects }: { projects: Project[] }) {
                 <button
                   key={proj.id}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => {
+                    setDirection(i >= active ? 1 : -1);
+                    setActive(i);
+                  }}
                   aria-label={`Show ${proj.title}`}
                   aria-pressed={i === active}
                   className="relative aspect-[19/10] w-44 shrink-0 self-end overflow-hidden border-r border-ink/40 md:w-56"

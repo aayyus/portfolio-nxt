@@ -167,6 +167,22 @@ export default function Works({ projects }: { projects: Project[] }) {
               className="pointer-events-none absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink"
             />
             </motion.div>
+            {/* Arrows over the image. Siblings of the drag area (not inside
+                it), so pressing one never starts a drag. */}
+            {([-1, 1] as const).map((dir) => (
+              <button
+                key={dir}
+                type="button"
+                onClick={() => go(dir)}
+                aria-label={dir === -1 ? "Previous project" : "Next project"}
+                className={cn(
+                  "absolute top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center border border-ink/50 bg-paper/85 text-lg text-ink backdrop-blur-sm transition-colors duration-300 hover:bg-ink hover:text-paper md:h-14 md:w-14",
+                  dir === -1 ? "left-3 md:left-4" : "right-3 md:right-4"
+                )}
+              >
+                {dir === -1 ? "←" : "→"}
+              </button>
+            ))}
           </div>
 
           <div className="flex flex-col md:grid md:grid-cols-10">

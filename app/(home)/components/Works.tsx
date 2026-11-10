@@ -9,9 +9,9 @@ import { site } from "@/lib/site";
 import type { Project } from "@/lib/types";
 import { EASE, Frame, Marquee, RollText, SectionTitle } from "./ui";
 
-// Typical width/height of a desktop site screenshot, used until the real
-// image has loaded and reported its own proportions.
-const DEFAULT_RATIO = 1.9;
+// Width/height of the project image box: the middle of the uploaded
+// screenshots' range (about 1.7–2.15), so bars on any of them stay thin.
+const FRAME_RATIO = 1.9;
 
 // How far (px, with a boost for a fast flick) a drag must travel to switch
 const SWIPE_PX = 70;
@@ -36,7 +36,6 @@ export default function Works({ projects }: { projects: Project[] }) {
   const [direction, setDirection] = useState<1 | -1>(1);
   // Where the pointer went down, to tell a drag's release from a real click
   const pressedAt = useRef<{ x: number; y: number } | null>(null);
-  const [ratios, setRatios] = useState<Record<string, number>>({});
   const railRef = useRef<HTMLDivElement>(null);
   const count = projects.length;
 
@@ -88,11 +87,13 @@ export default function Works({ projects }: { projects: Project[] }) {
           }}
           className="outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink"
         >
-          {/* Full-width screenshot, sized to the image's own proportions so
-              nothing is cropped. The box eases between ratios as you browse. */}
+          {/* Full-width screenshot in a fixed-shape box, so the section
+              doesn't change height between projects. object-contain keeps
+              every screenshot whole; the few that aren't this shape get thin
+              bars rather than being cropped. */}
           <div
-            className="relative overflow-hidden border-b border-ink/40 bg-ink/10 transition-[aspect-ratio] duration-500"
-            style={{ aspectRatio: String(ratios[p.id] ?? DEFAULT_RATIO) }}
+            className="relative overflow-hidden border-b border-ink/40 bg-ink/10"
+            style={{ aspectRatio: String(FRAME_RATIO) }}
           >
             {/* Drag or swipe sideways to change project. It springs back to
                 centre either way; a long or fast enough throw moves on. The
@@ -146,13 +147,6 @@ export default function Works({ projects }: { projects: Project[] }) {
                   quality={90}
                   draggable={false}
                   className="object-contain transition-transform duration-700 ease-out group-hover/img:scale-[1.03]"
-                  onLoad={(e) => {
-                    const img = e.currentTarget;
-                    if (img.naturalWidth && img.naturalHeight) {
-                      const r = img.naturalWidth / img.naturalHeight;
-                      setRatios((prev) => (prev[p.id] === r ? prev : { ...prev, [p.id]: r }));
-                    }
-                  }}
                 />
               </motion.div>
             </AnimatePresence>

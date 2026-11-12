@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/auth";
 import { readJson, writeJson } from "@/lib/storage";
 import type { Skill } from "@/lib/types";
@@ -51,6 +52,7 @@ export const POST = safeHandler(async (request: Request) => {
   };
   const updated = [...skills, skill];
   await writeJson("skills", updated);
+  revalidatePath("/");
   return NextResponse.json(updated);
 });
 
@@ -70,5 +72,6 @@ export const DELETE = safeHandler(async (request: Request) => {
     return NextResponse.json({ error: "Skill not found" }, { status: 404 });
   }
   await writeJson("skills", updated);
+  revalidatePath("/");
   return NextResponse.json(updated);
 });

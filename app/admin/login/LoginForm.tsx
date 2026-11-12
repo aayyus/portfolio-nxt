@@ -24,7 +24,9 @@ export default function LoginForm() {
         router.push("/admin");
         router.refresh();
       } else {
-        setError("Wrong password. Try again.");
+        // 429 = locked out after repeated failures; show the server's wording
+        const data = await res.json().catch(() => null);
+        setError(res.status === 429 && data?.error ? data.error : "Wrong password. Try again.");
       }
     } catch {
       setError("Something went wrong. Try again.");

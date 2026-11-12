@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { lockScroll, markIntroDone } from "@/lib/motion";
 import { site } from "@/lib/site";
+import { Logo } from "./ui";
 
 const COUNT_MS = 1400;
 const SEEN_KEY = "intro-seen";
@@ -77,7 +78,7 @@ export default function Intro() {
             >
               <div className="flex items-start justify-between">
                 <span className="flex items-center gap-2.5 text-2xl font-bold tracking-[-0.08em]">
-                  <img src="/logo.svg" alt="" className="h-8 w-8" />
+                  <Logo className="h-8 w-8" />
                   {site.wordmark}.
                 </span>
                 <span className="label opacity-70">{site.roles[0]}</span>

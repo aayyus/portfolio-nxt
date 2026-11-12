@@ -3,80 +3,23 @@
 @tailwind utilities;
 
 @layer base {
+  /* Editorial palette, as RGB channels so Tailwind opacity modifiers work
+     (bg-ink/40). Light: cream paper, forest ink. */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-
-    --radius: 0.75rem;
-
-    /* Editorial palette: cream paper, forest ink */
     --paper: 237 230 214;
     --ink: 31 61 43;
   }
-
+  /* Dark mode inverts to green-black paper with cream ink */
   .dark {
-    --background: 228 40% 3%;
-    --foreground: 0 0% 98%;
-
-    --card: 228 35% 5%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 228 35% 5%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-
-    /* Dark mode inverts to green-black paper with cream ink */
     --paper: 14 20 16;
     --ink: 237 230 214;
   }
 }
 
 @layer base {
+  /* Default line colour, for the few borders that don't name one */
   * {
-    @apply border-border;
+    border-color: rgb(var(--ink) / 0.4);
   }
   /* Lenis drives scrolling; native smooth scroll would fight it */
   html.lenis,

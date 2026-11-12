@@ -3,6 +3,10 @@ import type { ImageAlign } from "./types";
 /** Site-wide copy and links, kept in one place so they're easy to edit. */
 export const site = {
   name: "Aayush Sharma",
+  /** Canonical address, used for link previews, the sitemap and robots.txt. */
+  url: "https://aayyus-portfolio-nxt.vercel.app",
+  description:
+    "Shopify 360 developer building storefronts that sell: custom theme development, Klaviyo automation, Meta advertising and conversion rate optimisation.",
   wordmark: "aayush",
   email: "aayushat902@gmail.com",
   roles: [

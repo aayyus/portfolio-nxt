@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/auth";
 import { readJson, writeJson, writeBinary } from "@/lib/storage";
 import type { Project } from "@/lib/types";
@@ -137,6 +138,7 @@ export const POST = safeHandler(async (request: Request) => {
   const project: Project = { id: crypto.randomUUID(), ...parsed };
   const updated = [project, ...projects];
   await writeJson("projects", updated);
+  revalidatePath("/");
   return NextResponse.json(updated);
 });
 
@@ -167,6 +169,7 @@ export const PATCH = safeHandler(async (request: Request) => {
   const updated = [...projects];
   updated[index] = { ...projects[index], ...parsed, id };
   await writeJson("projects", updated);
+  revalidatePath("/");
   return NextResponse.json(updated);
 });
 
@@ -186,5 +189,6 @@ export const DELETE = safeHandler(async (request: Request) => {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
   await writeJson("projects", updated);
+  revalidatePath("/");
   return NextResponse.json(updated);
 });
